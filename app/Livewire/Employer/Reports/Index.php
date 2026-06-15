@@ -1,0 +1,79 @@
+<?php
+
+namespace App\Livewire\Employer\Reports;
+
+use App\Enums\ReportDatePreset;
+use App\Livewire\Employer\Reports\Concerns\HasReportFilters;
+use App\Models\OrganizationUser;
+use App\Services\EmployerContext;
+use App\Services\Reports\EmployerReportsAnalytics;
+use App\Support\EmployerReportExporter;
+use Livewire\Attributes\Layout;
+use Livewire\Attributes\Title;
+use Livewire\Component;
+
+#[Layout('layouts.employer')]
+#[Title('گزارش‌های مدیریتی')]
+class Index extends Component
+{
+    use HasReportFilters;
+
+    public ?string $drilldownDimension = null;
+
+    public ?string $drilldownValue = null;
+
+    public bool $showDrilldown = false;
+
+    public function drilldown(string $dimension, string $value): void
+    {
+        $this->drilldownDimension = $dimension;
+        $this->drilldownValue = $value;
+        $this->showDrilldown = true;
+    }
+
+    public function closeDrilldown(): void
+    {
+        $this->showDrilldown = false;
+        $this->drilldownDimension = null;
+        $this->drilldownValue = null;
+    }
+
+    public function export(string $format)
+    {
+        $filter = $this->reportFilter();
+
+        return match ($format) {
+            'csv' => EmployerReportExporter::downloadCsv($filter),
+            'xlsx', 'excel' => EmployerReportExporter::downloadExcel($filter),
+            'pdf' => EmployerReportExporter::downloadPdf($filter),
+            default => null,
+        };
+    }
+
+    public function render()
+    {
+        $filter = $this->reportFilter();
+        $analytics = app(EmployerReportsAnalytics::class);
+        $dashboard = $analytics->dashboard($filter);
+
+        $drilldownFilter = ($this->showDrilldown && $this->drilldownDimension)
+            ? $filter->withDrilldown($this->drilldownDimension, $this->drilldownValue)
+            : null;
+
+        $employees = OrganizationUser::query()
+            ->where('organization_id', EmployerContext::organizationId())
+            ->where('is_active', true)
+            ->orderBy('first_name')
+            ->get(['id', 'first_name', 'last_name', 'department']);
+
+        return view('livewire.employer.reports.index', [
+            'dashboard' => $dashboard,
+            'presets' => ReportDatePreset::selectable(),
+            'filterEmployees' => $employees,
+            'filter' => $filter,
+            'drilldownAnalyses' => $drilldownFilter
+                ? $analytics->drilldownAnalyses($drilldownFilter, 20)
+                : null,
+        ]);
+    }
+}

@@ -1,0 +1,34 @@
+<?php
+
+namespace Database\Seeders;
+
+use Database\Seeders\Demo\DemoAnalyticsSeeder;
+use Database\Seeders\Demo\DemoOrganizationsSeeder;
+use Illuminate\Database\Seeder;
+
+class DemoSeeder extends Seeder
+{
+    public function run(): void
+    {
+        $this->command?->info('Creating demo organizations, users, and wallets...');
+        $this->call(DemoOrganizationsSeeder::class);
+
+        $this->command?->info('Creating demo calls, customers, and analyses...');
+        $this->call(DemoAnalyticsSeeder::class);
+
+        $this->command?->newLine();
+        $this->command?->info('Demo seed complete.');
+        $this->command?->table(
+            ['Item', 'Count'],
+            [
+                ['Organizations', \App\Support\Seeding\DemoCatalog::ORGANIZATION_COUNT],
+                ['Demo users (employers + employees)', \App\Support\Seeding\DemoCatalog::ORGANIZATION_COUNT * (1 + \App\Support\Seeding\DemoCatalog::EMPLOYEES_PER_ORGANIZATION)],
+                ['Wallet balance per org', '۲۰٬۰۰۰ تومان (۲۰۰٬۰۰۰ ریال)'],
+                ['Calls per organization', \App\Support\Seeding\DemoCatalog::CALLS_PER_ORGANIZATION.' ('.\App\Support\Seeding\DemoCatalog::CALLS_TODAY_PER_ORGANIZATION.' today)'],
+                ['Demo password (all accounts)', \App\Support\Seeding\DemoCatalog::DEMO_PASSWORD],
+            ],
+        );
+        $this->command?->info(\App\Support\Seeding\DemoCatalog::credentialsSummary());
+        $this->command?->info('Example: '.\App\Support\Seeding\DemoCatalog::exampleEmployerLogin());
+    }
+}

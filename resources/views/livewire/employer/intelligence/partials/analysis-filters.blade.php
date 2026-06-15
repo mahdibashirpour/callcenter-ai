@@ -1,0 +1,179 @@
+@php
+    use App\Enums\ReportDatePreset;
+
+    $activeDatePreset = ReportDatePreset::tryFrom($datePreset);
+    $isDefaultDate = $datePreset === ReportDatePreset::Last30->value
+        && ! $customFrom
+        && ! $customTo;
+@endphp
+
+<div class="saas-card space-y-5">
+    <div class="flex flex-wrap items-center justify-between gap-3">
+        <h2 class="text-sm font-semibold uppercase tracking-wider text-zinc-500">فیلترها</h2>
+        @if ($filter->hasActiveFilters())
+            <button type="button" wire:click="clearFilters" class="text-sm font-medium text-indigo-600 hover:text-indigo-800 dark:text-indigo-400">
+                پاک کردن همه فیلترها
+            </button>
+        @endif
+    </div>
+
+    <div class="space-y-3">
+        <p class="text-sm font-medium text-zinc-700 dark:text-zinc-300">بازه زمانی</p>
+
+        <div class="flex flex-wrap gap-2">
+            @foreach ($primaryDatePresets as $preset)
+                <button
+                    type="button"
+                    wire:click="setDatePreset('{{ $preset->value }}')"
+                    @class([
+                        'rounded-md px-3 py-1.5 text-xs font-medium transition',
+                        'bg-zinc-900 text-white shadow-sm dark:bg-white dark:text-zinc-900' => $datePreset === $preset->value,
+                        'bg-zinc-100 text-zinc-700 hover:bg-zinc-200 dark:bg-zinc-800 dark:text-zinc-200' => $datePreset !== $preset->value,
+                    ])
+                >{{ $preset->label() }}</button>
+            @endforeach
+
+            <button
+                type="button"
+                wire:click="toggleCustomDateRange"
+                @class([
+                    'rounded-md px-3 py-1.5 text-xs font-medium transition',
+                    'bg-indigo-600 text-white shadow-sm' => $datePreset === 'custom' || $showCustomDateRange,
+                    'bg-zinc-100 text-zinc-700 hover:bg-zinc-200 dark:bg-zinc-800 dark:text-zinc-200' => $datePreset !== 'custom' && ! $showCustomDateRange,
+                ])
+            >بازه دلخواه</button>
+
+            <button
+                type="button"
+                wire:click="toggleMoreDatePresets"
+                @class([
+                    'rounded-md px-3 py-1.5 text-xs font-medium transition',
+                    'bg-zinc-900 text-white dark:bg-white dark:text-zinc-900' => collect($moreDatePresets)->contains(fn ($p) => $p->value === $datePreset),
+                    'bg-zinc-100 text-zinc-700 hover:bg-zinc-200 dark:bg-zinc-800 dark:text-zinc-200' => ! collect($moreDatePresets)->contains(fn ($p) => $p->value === $datePreset),
+                ])
+            >{{ $showMoreDatePresets ? 'بستن' : 'بیشتر' }}</button>
+        </div>
+
+        @if ($showMoreDatePresets)
+            <div class="flex flex-wrap gap-2 border-s-2 border-zinc-200 ps-3 dark:border-zinc-700">
+                @foreach ($moreDatePresets as $preset)
+                    <button
+                        type="button"
+                        wire:click="setDatePreset('{{ $preset->value }}')"
+                        @class([
+                            'rounded-md px-3 py-1.5 text-xs font-medium transition',
+                            'bg-zinc-900 text-white shadow-sm dark:bg-white dark:text-zinc-900' => $datePreset === $preset->value,
+                            'bg-zinc-100 text-zinc-700 hover:bg-zinc-200 dark:bg-zinc-800 dark:text-zinc-200' => $datePreset !== $preset->value,
+                        ])
+                    >{{ $preset->label() }}</button>
+                @endforeach
+            </div>
+        @endif
+
+        @if ($showCustomDateRange || $datePreset === 'custom')
+            <div class="flex flex-wrap items-center gap-3 rounded-lg border border-indigo-200/80 bg-indigo-50/50 px-4 py-3 dark:border-indigo-500/30 dark:bg-indigo-950/20">
+                <label class="text-sm text-zinc-500">از</label>
+                <x-saas.jalali-date-input wire:model.live="customFrom" class="text-sm" />
+                <label class="text-sm text-zinc-500">تا</label>
+                <x-saas.jalali-date-input wire:model.live="customTo" class="text-sm" />
+            </div>
+        @endif
+    </div>
+
+    <div class="flex flex-wrap gap-2 border-t border-zinc-200/80 pt-4 dark:border-zinc-800">
+        <span class="w-full text-sm font-medium text-zinc-700 dark:text-zinc-300">فیلتر سریع</span>
+        <button
+            type="button"
+            wire:click="applyQuickFilter('missed')"
+            @class([
+                'rounded-md px-3 py-1.5 text-xs font-medium transition',
+                'bg-red-600 text-white' => $callStatus === 'missed',
+                'bg-red-50 text-red-700 hover:bg-red-100 dark:bg-red-500/10 dark:text-red-400' => $callStatus !== 'missed',
+            ])
+        >تماس‌های از دست رفته</button>
+    </div>
+
+    <div class="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+        <div>
+            <label class="text-sm font-medium text-zinc-700 dark:text-zinc-300">کارشناس</label>
+            <select wire:model.live="filterEmployeeId" class="saas-input mt-1 text-sm">
+                <option value="">همه کارشناسان</option>
+                @foreach ($employees as $employee)
+                    <option value="{{ $employee->id }}">{{ $employee->full_name }}</option>
+                @endforeach
+            </select>
+        </div>
+
+        <div>
+            <label class="text-sm font-medium text-zinc-700 dark:text-zinc-300">وضعیت تماس</label>
+            <select wire:model.live="callStatus" class="saas-input mt-1 text-sm">
+                <option value="">همه وضعیت‌ها</option>
+                @foreach ($callStatuses as $status)
+                    <option value="{{ $status->value }}">{{ $status->label() }}</option>
+                @endforeach
+            </select>
+        </div>
+
+        <div>
+            <label class="text-sm font-medium text-zinc-700 dark:text-zinc-300">جهت تماس</label>
+            <select wire:model.live="directionFilter" class="saas-input mt-1 text-sm">
+                <option value="">همه</option>
+                @foreach ($directions as $direction)
+                    <option value="{{ $direction->value }}">{{ $direction->label() }}</option>
+                @endforeach
+            </select>
+        </div>
+
+        <div class="grid grid-cols-2 gap-2">
+            <div>
+                <label class="text-sm font-medium text-zinc-700 dark:text-zinc-300">حداقل مدت (دقیقه)</label>
+                <input wire:model.live.debounce.500ms="durationMin" type="number" min="0" placeholder="۰" class="saas-input mt-1 text-sm">
+            </div>
+            <div>
+                <label class="text-sm font-medium text-zinc-700 dark:text-zinc-300">حداکثر مدت (دقیقه)</label>
+                <input wire:model.live.debounce.500ms="durationMax" type="number" min="0" placeholder="∞" class="saas-input mt-1 text-sm">
+            </div>
+        </div>
+    </div>
+
+    @if (! $isDefaultDate || $filterEmployeeId || $callStatus || $directionFilter || $durationMin || $durationMax)
+        <div class="flex flex-wrap items-center gap-2 border-t border-zinc-200/80 pt-4 dark:border-zinc-800">
+            <span class="text-xs font-medium text-zinc-500">فیلترهای فعال:</span>
+            @if (! $isDefaultDate)
+                <button type="button" wire:click="clearDateFilter" class="rounded-md bg-indigo-50 px-3 py-1 text-xs font-medium text-indigo-700 dark:bg-indigo-500/10 dark:text-indigo-300">
+                    @if ($datePreset === 'custom' && ($customFrom || $customTo))
+                        بازه: {{ $customFrom ? shamsi($customFrom) : '…' }} تا {{ $customTo ? shamsi($customTo) : '…' }} ×
+                    @else
+                        بازه: {{ $activeDatePreset?->label() ?? $datePreset }} ×
+                    @endif
+                </button>
+            @endif
+            @if ($filterEmployeeId)
+                @php $activeEmployee = $employees->firstWhere('id', $filterEmployeeId); @endphp
+                <button type="button" wire:click="filterByAgent(null)" class="rounded-md bg-indigo-50 px-3 py-1 text-xs font-medium text-indigo-700 dark:bg-indigo-500/10 dark:text-indigo-300">
+                    کارشناس: {{ $activeEmployee?->full_name ?? '—' }} ×
+                </button>
+            @endif
+            @if ($callStatus)
+                <button type="button" wire:click="$set('callStatus', null)" class="rounded-md bg-zinc-100 px-3 py-1 text-xs font-medium text-zinc-700 dark:bg-zinc-800 dark:text-zinc-300">
+                    وضعیت: {{ \App\Domain\Voip\Enums\CallStatus::tryFrom($callStatus)?->label() }} ×
+                </button>
+            @endif
+            @if ($directionFilter)
+                <button type="button" wire:click="$set('directionFilter', null)" class="rounded-md bg-zinc-100 px-3 py-1 text-xs font-medium text-zinc-700 dark:bg-zinc-800 dark:text-zinc-300">
+                    جهت: {{ \App\Domain\Voip\Enums\CallDirection::tryFrom($directionFilter)?->label() }} ×
+                </button>
+            @endif
+            @if ($durationMin)
+                <button type="button" wire:click="$set('durationMin', null)" class="rounded-md bg-zinc-100 px-3 py-1 text-xs font-medium text-zinc-700 dark:bg-zinc-800 dark:text-zinc-300">
+                    حداقل {{ $durationMin }} دقیقه ×
+                </button>
+            @endif
+            @if ($durationMax)
+                <button type="button" wire:click="$set('durationMax', null)" class="rounded-md bg-zinc-100 px-3 py-1 text-xs font-medium text-zinc-700 dark:bg-zinc-800 dark:text-zinc-300">
+                    حداکثر {{ $durationMax }} دقیقه ×
+                </button>
+            @endif
+        </div>
+    @endif
+</div>

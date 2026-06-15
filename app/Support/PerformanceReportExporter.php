@@ -1,0 +1,128 @@
+<?php
+
+namespace App\Support;
+
+use App\DTOs\ReportFilter;
+use App\Models\OrganizationUser;
+use App\Services\Performance\EmployeePerformanceAnalytics;
+use Illuminate\Support\Facades\View;
+use OpenSpout\Common\Entity\Row;
+use OpenSpout\Writer\CSV\Writer as CsvWriter;
+use OpenSpout\Writer\XLSX\Writer as XlsxWriter;
+use Symfony\Component\HttpFoundation\StreamedResponse;
+
+class PerformanceReportExporter
+{
+    public static function downloadTeamCsv(ReportFilter $filter): StreamedResponse
+    {
+        return self::stream($filter, 'team', 'csv', self::teamHeaders(), self::teamRows($filter));
+    }
+
+    public static function downloadTeamExcel(ReportFilter $filter): StreamedResponse
+    {
+        return self::stream($filter, 'team', 'xlsx', self::teamHeaders(), self::teamRows($filter), true);
+    }
+
+    public static function downloadTeamPdf(ReportFilter $filter): StreamedResponse
+    {
+        $analytics = app(EmployeePerformanceAnalytics::class);
+        $dashboard = $analytics->teamDashboard($filter);
+
+        $html = View::make('exports.performance-team-pdf', [
+            'filter' => $filter,
+            'dashboard' => $dashboard,
+        ])->render();
+
+        return response()->streamDownload(
+            fn () => print($html),
+            self::filename($filter, 'team', 'html'),
+            ['Content-Type' => 'text/html; charset=UTF-8'],
+        );
+    }
+
+    public static function downloadEmployeeCsv(ReportFilter $filter, OrganizationUser $employee): StreamedResponse
+    {
+        return self::stream($filter, 'employee-'.$employee->id, 'csv', self::employeeHeaders(), self::employeeRows($filter, $employee));
+    }
+
+    public static function downloadEmployeeExcel(ReportFilter $filter, OrganizationUser $employee): StreamedResponse
+    {
+        return self::stream($filter, 'employee-'.$employee->id, 'xlsx', self::employeeHeaders(), self::employeeRows($filter, $employee), true);
+    }
+
+    public static function downloadEmployeePdf(ReportFilter $filter, OrganizationUser $employee): StreamedResponse
+    {
+        $analytics = app(EmployeePerformanceAnalytics::class);
+        $profile = $analytics->employeeProfile($filter, $employee);
+
+        $html = View::make('exports.performance-employee-pdf', [
+            'filter' => $filter,
+            'profile' => $profile,
+            'employee' => $employee,
+        ])->render();
+
+        return response()->streamDownload(
+            fn () => print($html),
+            self::filename($filter, 'employee-'.$employee->id, 'html'),
+            ['Content-Type' => 'text/html; charset=UTF-8'],
+        );
+    }
+
+    /** @param  list<string>  $headers  */
+    /** @param  list<list<string|int|float|null>>  $rows  */
+    private static function stream(
+        ReportFilter $filter,
+        string $scope,
+        string $extension,
+        array $headers,
+        array $rows,
+        bool $excel = false,
+    ): StreamedResponse {
+        return response()->streamDownload(function () use ($headers, $rows, $excel): void {
+            $writer = $excel ? new XlsxWriter : new CsvWriter;
+            $writer->openToFile('php://output');
+            $writer->addRow(Row::fromValues($headers));
+
+            foreach ($rows as $row) {
+                $writer->addRow(Row::fromValues($row));
+            }
+
+            $writer->close();
+        }, self::filename($filter, $scope, $extension));
+    }
+
+    /** @return list<string> */
+    private static function teamHeaders(): array
+    {
+        return ['کارشناس', 'بخش', 'تماس‌های برقرارشده', 'مکالمات تحلیل‌شده', 'امتیاز مکالمه', 'امتیاز لید فروش', 'شاخص رضایت مشتری'];
+    }
+
+    /** @return list<list<string|int|float|null>> */
+    private static function teamRows(ReportFilter $filter): array
+    {
+        return app(EmployeePerformanceAnalytics::class)->exportTeamRows($filter);
+    }
+
+    /** @return list<string> */
+    private static function employeeHeaders(): array
+    {
+        return ['تاریخ تماس', 'مشتری', 'مدت مکالمه', 'امتیاز مکالمه', 'امتیاز لید', 'احساس مشتری', 'خلاصه مکالمه'];
+    }
+
+    /** @return list<list<string|int|float|null>> */
+    private static function employeeRows(ReportFilter $filter, OrganizationUser $employee): array
+    {
+        return app(EmployeePerformanceAnalytics::class)->exportEmployeeRows($filter, $employee);
+    }
+
+    private static function filename(ReportFilter $filter, string $scope, string $extension): string
+    {
+        return sprintf(
+            'performance-%s-%s-%s.%s',
+            $scope,
+            $filter->from->format('Ymd'),
+            $filter->to->format('Ymd'),
+            $extension,
+        );
+    }
+}

@@ -1,0 +1,141 @@
+<?php
+
+namespace App\Application\Intelligence\Jobs;
+
+use App\Application\Llm\AnalysisManager;
+use App\Domain\Call\Enums\CallProcessingStatus;
+use App\Domain\Recording\Contracts\RecordingDownloaderInterface;
+use App\Domain\Recording\Contracts\RecordingRepositoryInterface;
+use App\Domain\Recording\DTOs\RecordingData;
+use App\Models\Call;
+use App\Models\VoipCallLog;
+use App\Services\CallProcessingTracker;
+use Illuminate\Bus\Queueable;
+use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Foundation\Bus\Dispatchable;
+use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Bus;
+
+class AnalyzeAudioJob implements ShouldQueue
+{
+    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+
+    public int $tries = 3;
+
+    public int $timeout = 600;
+
+    public function __construct(
+        public int $callId,
+        public ?string $recordingUrl = null,
+    ) {}
+
+    public function handle(
+        AnalysisManager $analysis,
+        RecordingRepositoryInterface $recordings,
+        RecordingDownloaderInterface $downloader,
+        CallProcessingTracker $tracker,
+    ): void {
+        $call = Call::query()->findOrFail($this->callId);
+        $job = $tracker->forCall($call->id);
+
+        $call->update([
+            'processing_status' => CallProcessingStatus::Downloading,
+            'processing_error' => null,
+        ]);
+
+        if ($job) {
+            $tracker->markProcessingStarted($job);
+        }
+
+        try {
+            $this->ensureRecording($call, $recordings, $downloader);
+
+            $call->update(['processing_status' => CallProcessingStatus::Analyzing]);
+
+            if ($job) {
+                $tracker->markSendingToAi($job);
+                $tracker->markWaitingForAi($job);
+            }
+
+            $analysis::forOrganization($call->organization_id)
+                ->analyzeCall($this->callId);
+
+            if ($job) {
+                $tracker->markProcessingResult($job);
+                $tracker->markCompleted($job);
+            }
+
+            $call->update(['processing_status' => CallProcessingStatus::Analyzed]);
+        } catch (\Throwable $e) {
+            $call->update([
+                'processing_status' => CallProcessingStatus::Failed,
+                'processing_error' => $e->getMessage(),
+            ]);
+
+            if ($job) {
+                $tracker->markFailed($job, $e->getMessage());
+            }
+
+            throw $e;
+        }
+    }
+
+    private function ensureRecording(
+        Call $call,
+        RecordingRepositoryInterface $recordings,
+        RecordingDownloaderInterface $downloader,
+    ): void {
+        $existing = $recordings->findByCallId($call->id);
+
+        if ($existing?->status === 'completed' && $existing->storagePath) {
+            return;
+        }
+
+        $url = $this->recordingUrl
+            ?? $call->voipCallLog?->recording_url
+            ?? VoipCallLog::query()->find($call->voip_call_log_id)?->recording_url;
+
+        if (! $url) {
+            throw new \RuntimeException('No recording URL available for call.');
+        }
+
+        $recordingId = $existing?->id ?? $recordings->create(new RecordingData(
+            callId: $call->id,
+            sourceUrl: $url,
+            status: 'downloading',
+        ));
+
+        $result = $downloader->download($url, $call->id);
+
+        if (! $result->success) {
+            $recordings->update($recordingId, new RecordingData(
+                callId: $call->id,
+                sourceUrl: $url,
+                status: 'failed',
+            ));
+
+            throw new \RuntimeException($result->error ?? 'Recording download failed.');
+        }
+
+        $recordings->update($recordingId, new RecordingData(
+            callId: $call->id,
+            sourceUrl: $url,
+            storageDisk: $result->storageDisk ?? config('recordings.disk', 'local'),
+            storagePath: $result->storagePath,
+            mimeType: $result->mimeType,
+            fileSizeBytes: $result->fileSizeBytes,
+            status: 'completed',
+            id: $recordingId,
+        ));
+    }
+
+    public static function dispatchChain(int $callId, ?string $recordingUrl = null): void
+    {
+        Bus::chain([
+            new self($callId, $recordingUrl),
+            new UpdateEmployeeMetricsJob($callId),
+            new SyncCrmJob($callId),
+        ])->dispatch();
+    }
+}

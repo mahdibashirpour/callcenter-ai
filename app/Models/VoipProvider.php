@@ -1,0 +1,37 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Attributes\Fillable;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
+
+#[Fillable(['name', 'code', 'adapter_class', 'supports_webhook', 'supports_polling', 'polling_interval_seconds', 'is_active', 'config'])]
+class VoipProvider extends Model
+{
+    /** @use HasFactory<\Database\Factories\VoipProviderFactory> */
+    use HasFactory;
+
+    protected function casts(): array
+    {
+        return [
+            'is_active' => 'boolean',
+            'supports_webhook' => 'boolean',
+            'supports_polling' => 'boolean',
+            'polling_interval_seconds' => 'integer',
+            'config' => 'array',
+        ];
+    }
+
+    public function connections(): HasMany
+    {
+        return $this->hasMany(OrganizationVoipConnection::class);
+    }
+
+    public function metaDefinitions(): MorphMany
+    {
+        return $this->morphMany(IntegrationMetaDefinition::class, 'provider');
+    }
+}

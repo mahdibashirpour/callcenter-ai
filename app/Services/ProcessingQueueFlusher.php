@@ -1,0 +1,168 @@
+<?php
+
+namespace App\Services;
+
+use App\Application\Intelligence\Jobs\AnalyzeAudioJob;
+use App\Application\Intelligence\Jobs\SyncCrmJob;
+use App\Application\Intelligence\Jobs\UpdateEmployeeMetricsJob;
+use App\Domain\Processing\Enums\ProcessingJobStatus;
+use App\Models\CallProcessingJob;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
+
+class ProcessingQueueFlusher
+{
+    private const PROCESSING_JOB_CLASSES = [
+        AnalyzeAudioJob::class,
+        UpdateEmployeeMetricsJob::class,
+        SyncCrmJob::class,
+    ];
+
+    public function __construct(
+        private CallProcessingTracker $tracker,
+    ) {}
+
+    /**
+     * @return array{laravel_jobs_deleted: int, failed_jobs_deleted: int, tracking_jobs_cancelled: int}
+     */
+    public function flush(?int $organizationId = null, bool $includeHistory = false): array
+    {
+        $laravelJobsDeleted = $this->clearLaravelProcessingJobs();
+        $failedJobsDeleted = $this->clearFailedJobs();
+        $trackingJobsCancelled = $this->cancelActiveTrackingJobs($organizationId);
+
+        if ($includeHistory) {
+            $historyQuery = CallProcessingJob::query();
+
+            if ($organizationId) {
+                $historyQuery->where('organization_id', $organizationId);
+            }
+
+            $historyQuery->delete();
+        }
+
+        $result = [
+            'laravel_jobs_deleted' => $laravelJobsDeleted,
+            'failed_jobs_deleted' => $failedJobsDeleted,
+            'tracking_jobs_cancelled' => $trackingJobsCancelled,
+        ];
+
+        Log::info('Processing queue flushed', $result);
+
+        return $result;
+    }
+
+    /**
+     * Cancel UI-tracked jobs that no longer have a matching Laravel queue entry.
+     *
+     * @return int Number of jobs reconciled.
+     */
+    public function syncOrphans(?int $organizationId = null): int
+    {
+        $query = CallProcessingJob::query()
+            ->where('status', ProcessingJobStatus::Queued);
+
+        if ($organizationId) {
+            $query->where('organization_id', $organizationId);
+        }
+
+        $reconciled = 0;
+
+        foreach ($query->get() as $job) {
+            if ($this->hasLaravelJobForCall($job->call_id)) {
+                continue;
+            }
+
+            $this->tracker->markCancelled($job, 'کار در صف سیستم یافت نشد و به‌عنوان لغوشده علامت‌گذاری شد.');
+            $reconciled++;
+        }
+
+        if ($reconciled > 0) {
+            Log::info('Processing queue orphans reconciled', [
+                'reconciled' => $reconciled,
+                'organization_id' => $organizationId,
+            ]);
+        }
+
+        return $reconciled;
+    }
+
+    public function syncAfterQueueCommand(string $command): void
+    {
+        if (! in_array($command, ['queue:flush', 'queue:clear'], true)) {
+            return;
+        }
+
+        $this->syncOrphans();
+        $this->cancelActiveTrackingJobs();
+    }
+
+    private function clearLaravelProcessingJobs(): int
+    {
+        $deleted = 0;
+
+        foreach (self::PROCESSING_JOB_CLASSES as $class) {
+            $deleted += DB::table('jobs')
+                ->where('payload', 'like', '%'.str_replace('\\', '\\\\', $class).'%')
+                ->delete();
+        }
+
+        return $deleted;
+    }
+
+    private function clearFailedJobs(): int
+    {
+        $count = (int) DB::table('failed_jobs')->count();
+
+        app('queue.failer')->flush();
+
+        return $count;
+    }
+
+    private function cancelActiveTrackingJobs(?int $organizationId = null): int
+    {
+        $query = CallProcessingJob::query()
+            ->whereIn('status', [
+                ProcessingJobStatus::Uploading,
+                ProcessingJobStatus::Queued,
+                ProcessingJobStatus::Processing,
+            ]);
+
+        if ($organizationId) {
+            $query->where('organization_id', $organizationId);
+        }
+
+        $cancelled = 0;
+
+        foreach ($query->get() as $job) {
+            $this->tracker->markCancelled($job, 'صف پردازش پاک‌سازی شد.');
+            $cancelled++;
+        }
+
+        return $cancelled;
+    }
+
+    private function hasLaravelJobForCall(int $callId): bool
+    {
+        foreach (self::PROCESSING_JOB_CLASSES as $class) {
+            $escapedClass = str_replace('\\', '\\\\', $class);
+
+            $exists = DB::table('jobs')
+                ->where('payload', 'like', '%'.$escapedClass.'%')
+                ->where(function ($query) use ($callId) {
+                    $query
+                        ->where('payload', 'like', '%"callId";i:'.$callId.';%')
+                        ->orWhere('payload', 'like', '%"callId";i:'.$callId.'%')
+                        ->orWhere('payload', 'like', '%"callId":'.$callId.'%')
+                        ->orWhere('payload', 'like', '%"callId": '.$callId.'%');
+                })
+                ->exists();
+
+            if ($exists) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+}
