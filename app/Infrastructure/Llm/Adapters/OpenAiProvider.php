@@ -36,7 +36,11 @@ class OpenAiProvider extends AbstractLlmProvider
 
     public function analyzeAudio(AudioAnalysisRequestData $request): LlmOperationResult
     {
-        $model = $this->resolveModel($request->model, 'gpt-4o-mini');
+        $model = $this->resolveAudioAnalysisModel($request->model);
+
+        if ($refused = $this->refuseDemoAnalysis($request, $model)) {
+            return $refused;
+        }
 
         if (! $this->hasApiKey()) {
             return $this->demoAudioAnalysis($request, $model);
@@ -46,6 +50,10 @@ class OpenAiProvider extends AbstractLlmProvider
         $promptBuilder = app(\App\Application\Llm\Services\PromptBuilder::class);
 
         [$audioBase64, $audioFormat] = $this->resolveAudioPayload($request);
+
+        if ($this->hasRealAudio($request) && ! $audioBase64) {
+            return $this->failure('فایل صوتی برای تحلیل یافت نشد.');
+        }
 
         $guard = app(\App\Services\PersianOutputGuard::class);
         $parsed = null;
@@ -131,5 +139,23 @@ class OpenAiProvider extends AbstractLlmProvider
     protected function resolveBaseUrl(): string
     {
         return $this->config->credentials->baseUrl ?? 'https://api.openai.com/v1';
+    }
+
+    private function resolveAudioAnalysisModel(?string $requestedModel): string
+    {
+        $model = $this->resolveModel($requestedModel, 'gpt-4o-audio-preview');
+        $audioCapableModels = [
+            'gpt-4o-audio-preview',
+            'gpt-4o',
+            'gpt-4o-mini',
+            'gpt-4o-mini-audio-preview',
+            'gpt-4-turbo',
+        ];
+
+        if (in_array($model, $audioCapableModels, true)) {
+            return $model;
+        }
+
+        return 'gpt-4o-audio-preview';
     }
 }

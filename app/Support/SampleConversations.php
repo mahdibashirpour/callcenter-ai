@@ -15,14 +15,14 @@ class SampleConversations
             [
                 'id' => 'sales-follow-up',
                 'title' => 'پیگیری پیشنهاد فروش',
-                'description' => 'پیگیری پس از ارسال پیشنهاد قیمت به مشتری بالقوه',
+                'description' => '',
                 'category' => 'فروش',
                 'filename' => '01-sales-follow-up.mp3',
             ],
             [
                 'id' => 'sales-subscription-renewal',
-                'title' => 'فروش و تمدید اشتراک',
-                'description' => 'تماس فروش برای ترغیب مشتری به تمدید یا ارتقای اشتراک',
+                'title' => 'پیگیری پیشنهاد فروش',
+                'description' => '',
                 'category' => 'فروش',
                 'filename' => '02-sales-subscription-renewal.mp3',
             ],
@@ -35,7 +35,7 @@ class SampleConversations
     public static function all(): array
     {
         return array_map(function (array $definition): array {
-            $absolutePath = public_path(self::DIRECTORY.'/'.$definition['filename']);
+            $absolutePath = public_path(self::DIRECTORY . '/' . $definition['filename']);
 
             return [
                 ...$definition,

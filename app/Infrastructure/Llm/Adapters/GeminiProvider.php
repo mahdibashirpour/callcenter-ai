@@ -38,6 +38,10 @@ class GeminiProvider extends AbstractLlmProvider
     {
         $model = $this->resolveModel($request->model, 'gemini-2.0-flash');
 
+        if ($refused = $this->refuseDemoAnalysis($request, $model)) {
+            return $refused;
+        }
+
         return $this->demoAudioAnalysis($request, $model);
     }
 }

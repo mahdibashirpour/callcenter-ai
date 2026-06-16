@@ -50,6 +50,24 @@ abstract class AbstractLlmProvider implements LlmProviderInterface
         return LlmOperationResult::failure($error, $data);
     }
 
+    protected function hasRealAudio(AudioAnalysisRequestData $request): bool
+    {
+        return filled($request->storagePath) || filled($request->recordingUrl);
+    }
+
+    protected function refuseDemoAnalysis(AudioAnalysisRequestData $request, string $model): ?LlmOperationResult
+    {
+        if (! $this->hasRealAudio($request)) {
+            return null;
+        }
+
+        if ($this->hasApiKey()) {
+            return $this->failure('تحلیل صوتی واقعی برای این ارائه‌دهنده هنوز پشتیبانی نمی‌شود. در پنل ادمین، مدل پیش‌فرض را روی OpenAI قرار دهید.');
+        }
+
+        return $this->failure('برای تحلیل واقعی فایل صوتی، کلید API ارائه‌دهنده هوش مصنوعی را در پنل ادمین تنظیم کنید.');
+    }
+
     protected function demoAudioAnalysis(AudioAnalysisRequestData $request, string $model): LlmOperationResult
     {
         $data = [

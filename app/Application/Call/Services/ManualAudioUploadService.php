@@ -150,7 +150,7 @@ class ManualAudioUploadService
 
             $this->tracker->markUploaded($processingJob);
 
-            AnalyzeAudioJob::dispatchChain($callId);
+            AnalyzeAudioJob::dispatchChainSync($callId);
 
             return $callId;
         });

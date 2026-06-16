@@ -39,6 +39,10 @@ class AnthropicProvider extends AbstractLlmProvider
     {
         $model = $this->resolveModel($request->model, 'claude-3-5-sonnet-latest');
 
+        if ($refused = $this->refuseDemoAnalysis($request, $model)) {
+            return $refused;
+        }
+
         return $this->demoAudioAnalysis($request, $model);
     }
 }

@@ -243,7 +243,7 @@ routes/
 
 ## Seeding demo data
 
-The project includes comprehensive demo seeders with **15 organizations**, **75 demo users** (1 employer + 4 employees each), Persian names, AI wallets (**20,000 Toman / 200,000 IRR** per org), customers, **150 calls per organization** (10 dated today, the rest spread across the last 30 days), and matching conversation analyses. All demo accounts share the password **`123456789`** (hashed at seed time; demo/test only).
+The project includes comprehensive demo seeders with **20 organizations**, **100 demo users** (1 employer + 4 employees each), Persian names, AI wallets (**20,000 Toman / 200,000 IRR** per org), customers, **150 calls per organization** (10 dated today, the rest spread across the last 30 days), and matching conversation analyses. All demo accounts share the password **`123456789`** (hashed at seed time; demo/test only).
 
 Demo organizations are **standalone**: they have no CRM, VoIP, or per-organization LLM connections. Call/analytics sample data is seeded locally for UI testing. All organizations use the **platform default AI provider and model** configured in admin billing settings.
 

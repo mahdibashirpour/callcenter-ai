@@ -132,10 +132,20 @@ class AnalyzeAudioJob implements ShouldQueue
 
     public static function dispatchChain(int $callId, ?string $recordingUrl = null): void
     {
-        Bus::chain([
+        self::chain($callId, $recordingUrl)->dispatch();
+    }
+
+    public static function dispatchChainSync(int $callId, ?string $recordingUrl = null): void
+    {
+        self::chain($callId, $recordingUrl)->dispatchSync();
+    }
+
+    private static function chain(int $callId, ?string $recordingUrl = null): \Illuminate\Foundation\Bus\PendingChain
+    {
+        return Bus::chain([
             new self($callId, $recordingUrl),
             new UpdateEmployeeMetricsJob($callId),
             new SyncCrmJob($callId),
-        ])->dispatch();
+        ]);
     }
 }

@@ -14,7 +14,7 @@ final class DemoCatalog
     /** ۲۰٬۰۰۰ تومان — stored as Rials (۱ تومان = ۱۰ ریال). */
     public const WALLET_BALANCE_IRR = 200_000;
 
-    public const ORGANIZATION_COUNT = 15;
+    public const ORGANIZATION_COUNT = 20;
 
     public const EMPLOYEES_PER_ORGANIZATION = 4;
 
@@ -124,6 +124,11 @@ final class DemoCatalog
             ['slug' => 'tadbirline', 'title' => 'تدبیرلاین تماس', 'industry' => 'بیمه'],
             ['slug' => 'niktel', 'title' => 'نیک‌تل خدمات', 'industry' => 'سلامت دیجیتال'],
             ['slug' => 'zarrinvoip', 'title' => 'زرین‌ویپ پشتیبانی', 'industry' => 'لوازم خانگی'],
+            ['slug' => 'rayantamas', 'title' => 'رایان‌تماس اهواز', 'industry' => 'خدمات مشتریان'],
+            ['slug' => 'pardiscall', 'title' => 'پردیس‌کال ارتباطات', 'industry' => 'فروش B2B'],
+            ['slug' => 'omidvoip', 'title' => 'امیدویپ جنوب', 'industry' => 'مخابرات'],
+            ['slug' => 'tosienet', 'title' => 'توسعه‌نت خدمات', 'industry' => 'نرم‌افزار سازمانی'],
+            ['slug' => 'sepehrsupport', 'title' => 'سپهرپشتیبانی', 'industry' => 'خدمات پس از فروش'],
         ];
     }
 
@@ -146,6 +151,11 @@ final class DemoCatalog
             ['name' => 'داریوش شفیعی', 'email_first' => 'dariush', 'email_last' => 'shafiei', 'gender' => 'male'],
             ['name' => 'سمیرا طاهری', 'email_first' => 'samira', 'email_last' => 'taheri', 'gender' => 'female'],
             ['name' => 'یاسر امینی', 'email_first' => 'yaser', 'email_last' => 'amini', 'gender' => 'male'],
+            ['name' => 'رضا پورمحمدی', 'email_first' => 'reza', 'email_last' => 'pourmohammadi', 'gender' => 'male'],
+            ['name' => 'حدیث محمدزاده', 'email_first' => 'hadis', 'email_last' => 'mohammadzadeh', 'gender' => 'female'],
+            ['name' => 'امیرحسین عبدی', 'email_first' => 'amirhossein', 'email_last' => 'abdi', 'gender' => 'male'],
+            ['name' => 'رویا کشاورز', 'email_first' => 'roya', 'email_last' => 'keshavarz', 'gender' => 'female'],
+            ['name' => 'وحید جلالی', 'email_first' => 'vahid', 'email_last' => 'jalali', 'gender' => 'male'],
         ];
     }
 

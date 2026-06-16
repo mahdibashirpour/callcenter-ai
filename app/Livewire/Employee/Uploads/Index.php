@@ -195,9 +195,9 @@ class Index extends Component
                     title: $this->title ?: $sample['title'],
                     customerName: $this->customerName ?: null,
                     customerPhone: $this->customerPhone ?: null,
-                    notes: $this->notes ?: $sample['description'],
+                    notes: $this->notes ?: null,
                     category: $this->category ?: $sample['category'],
-                    tags: $this->parseTags($this->tags) ?? ['نمونه دمو'],
+                    tags: $this->parseTags($this->tags) ?? ['مکالمه نمونه'],
                     conversationDate: $this->conversationDate ? new \DateTimeImmutable($this->conversationDate) : null,
                 ),
             );

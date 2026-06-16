@@ -41,6 +41,10 @@ class CustomLlmProvider extends AbstractLlmProvider
         $baseUrl = $this->config->credentials->baseUrl;
 
         if (! $baseUrl || ! $this->hasApiKey()) {
+            if ($refused = $this->refuseDemoAnalysis($request, $model)) {
+                return $refused;
+            }
+
             return $this->demoAudioAnalysis($request, $model);
         }
 
