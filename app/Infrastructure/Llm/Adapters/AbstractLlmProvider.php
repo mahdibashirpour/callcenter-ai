@@ -62,10 +62,10 @@ abstract class AbstractLlmProvider implements LlmProviderInterface
         }
 
         if ($this->hasApiKey()) {
-            return $this->failure('تحلیل صوتی واقعی برای این ارائه‌دهنده هنوز پشتیبانی نمی‌شود. در پنل ادمین، مدل پیش‌فرض را روی OpenAI قرار دهید.');
+            return $this->failure('تحلیل صوتی واقعی برای این ارائه‌دهنده پشتیبانی نمی‌شود. مدل پیش‌فرض را روی OpenAI تنظیم کنید.');
         }
 
-        return $this->failure('برای تحلیل واقعی فایل صوتی، کلید API ارائه‌دهنده هوش مصنوعی را در پنل ادمین تنظیم کنید.');
+        return $this->failure('برای تحلیل واقعی تماس، کلید API هوش مصنوعی باید در پنل ادمین تنظیم شود.');
     }
 
     protected function demoAudioAnalysis(AudioAnalysisRequestData $request, string $model): LlmOperationResult

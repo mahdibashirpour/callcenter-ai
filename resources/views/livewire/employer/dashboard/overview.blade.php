@@ -76,8 +76,8 @@
             @empty
                 <div class="col-span-full">
                     <x-saas.empty-state
-                        title="هنوز داده عملکردی ثبت نشده"
-                        description="پس از تحلیل تماس‌های کارشناسان، کارت‌های عملکرد اینجا نمایش داده می‌شوند."
+                        title="@lang('ui.empty.no_team_performance.title')"
+                        description="@lang('ui.empty.no_team_performance.description')"
                     />
                 </div>
             @endforelse
@@ -103,7 +103,10 @@
                         <p class="mt-1 text-[11px] text-zinc-400">{{ $activity['time'] }}</p>
                     </div>
                 @empty
-                    <x-saas.empty-state title="فعالیتی ثبت نشده" />
+                    <x-saas.empty-state
+                        title="@lang('ui.empty.no_activity_feed.title')"
+                        description="@lang('ui.empty.no_activity_feed.description')"
+                    />
                 @endforelse
             </div>
         </div>

@@ -6,14 +6,14 @@
     <div class="saas-card">
         <div class="flex items-start justify-between gap-3">
             <div>
-                <h2 class="text-sm font-semibold uppercase tracking-wider text-zinc-500">پردازش</h2>
+                <h2 class="text-sm font-semibold uppercase tracking-wider text-zinc-500">وضعیت تحلیل</h2>
                 <p class="mt-1 text-sm font-medium text-zinc-900 dark:text-white">
                     {{ $processingJob->status->label() }}
                 </p>
                 <p class="text-xs text-zinc-500">{{ $processingJob->stage->label() }}</p>
             </div>
             @if ($queueUrl ?? null)
-                <a href="{{ $queueUrl }}" class="shrink-0 text-xs font-medium text-indigo-600 hover:text-indigo-800 dark:text-indigo-400">صف</a>
+                <a href="{{ $queueUrl }}" class="shrink-0 text-xs font-medium text-indigo-600 hover:text-indigo-800 dark:text-indigo-400">{{ __('ui.cta.view_queue') }}</a>
             @endif
         </div>
 
@@ -32,7 +32,7 @@
     </div>
 @elseif ($call && $call->processing_status)
     <div class="saas-card">
-        <h2 class="text-sm font-semibold uppercase tracking-wider text-zinc-500">پردازش</h2>
+        <h2 class="text-sm font-semibold uppercase tracking-wider text-zinc-500">وضعیت پردازش</h2>
         <p class="mt-2 text-sm font-medium text-zinc-900 dark:text-white">
             {{ $call->processing_status->label() }}
         </p>

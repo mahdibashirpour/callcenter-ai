@@ -58,14 +58,14 @@
         <div wire:loading.flex wire:target="{{ $wireModel }}" class="absolute inset-0 z-10 hidden items-center justify-center rounded-lg bg-white/80 backdrop-blur-sm dark:bg-zinc-900/80">
             <div class="flex flex-col items-center gap-3">
                 <span class="audio-dropzone__spinner" aria-hidden="true"></span>
-                <p class="text-sm font-medium text-zinc-700 dark:text-zinc-200">در حال آماده‌سازی فایل…</p>
+                <p class="text-sm font-medium text-zinc-700 dark:text-zinc-200">در حال آماده‌سازی تماس…</p>
             </div>
         </div>
 
         <div wire:loading.flex wire:target="submitForAnalysis" class="absolute inset-0 z-10 hidden items-center justify-center rounded-lg bg-white/80 backdrop-blur-sm dark:bg-zinc-900/80">
             <div class="flex flex-col items-center gap-3">
                 <span class="audio-dropzone__spinner" aria-hidden="true"></span>
-                <p class="text-sm font-medium text-indigo-700 dark:text-indigo-300">در حال ارسال برای تحلیل هوش مصنوعی…</p>
+                <p class="text-sm font-medium text-indigo-700 dark:text-indigo-300">در حال ارسال برای تحلیل…</p>
             </div>
         </div>
 
@@ -77,8 +77,8 @@
                     </svg>
                 </div>
                 <div>
-                    <p class="text-lg font-semibold text-emerald-800 dark:text-emerald-300">فایل با موفقیت ارسال شد</p>
-                    <p class="mt-1 text-sm text-emerald-700/80 dark:text-emerald-400/80">تحلیل در حال انجام است — می‌توانید تماس جدید آپلود کنید</p>
+                    <p class="text-lg font-semibold text-emerald-800 dark:text-emerald-300">تماس با موفقیت ارسال شد</p>
+                    <p class="mt-1 text-sm text-emerald-700/80 dark:text-emerald-400/80">تحلیل در حال انجام است — می‌توانید تماس بعدی را بارگذاری کنید</p>
                 </div>
             </div>
         @elseif ($hasFile)
@@ -116,10 +116,10 @@
                 </div>
                 <div>
                     <p class="text-lg font-semibold text-zinc-900 dark:text-white">
-                        فایل صوتی را اینجا رها کنید
+                        تماس صوتی را اینجا رها کنید
                     </p>
                     <p class="mt-2 text-sm text-zinc-500">
-                        یا <span class="font-medium text-indigo-600 dark:text-indigo-400">کلیک کنید</span> و از دستگاه انتخاب نمایید
+                        یا <span class="font-medium text-indigo-600 dark:text-indigo-400">انتخاب کنید</span> تا از دستگاه بارگذاری شود
                     </p>
                 </div>
                 <p class="rounded-md bg-zinc-100 px-3 py-1 text-xs text-zinc-500 dark:bg-zinc-800">

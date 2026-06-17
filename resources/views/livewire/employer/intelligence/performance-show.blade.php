@@ -131,7 +131,7 @@
                     @forelse ($coaching['training_areas'] as $area)
                         <li class="flex gap-2"><span class="text-indigo-500">•</span>{{ $area }}</li>
                     @empty
-                        <li class="text-zinc-500">پیشنهادی ثبت نشده</li>
+                        <li class="text-zinc-500">@lang('ui.empty.no_recommendations.title')</li>
                     @endforelse
                 </ul>
             </div>
@@ -178,7 +178,10 @@
                     </div>
                 </a>
             @empty
-                <x-saas.empty-state title="تماسی در این بازه نیست" />
+                <x-saas.empty-state
+                    title="@lang('ui.empty.no_calls.title')"
+                    description="@lang('ui.empty.no_calls.description')"
+                />
             @endforelse
         </div>
     </section>

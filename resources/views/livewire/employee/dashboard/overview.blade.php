@@ -48,14 +48,14 @@
 @endphp
 
 <div class="saas-page">
-    <section class="saas-hero">
+    <section class="saas-hero" data-tour="dashboard-hero">
         <div class="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
             <div class="flex items-center gap-5">
                 <x-saas.avatar :employee="$membership" size="xl" ring />
                 <div>
                     <p class="text-sm font-medium uppercase tracking-wider text-indigo-600">داشبورد عملکرد</p>
                     <h1 class="text-3xl font-bold tracking-tight">خوش آمدید، {{ $membership->first_name }}</h1>
-                    <p class="mt-2 text-zinc-500">مرکز فرمان شخصی شما برای رشد و اقدام.</p>
+                    <p class="mt-2 text-zinc-500">مرکز بینش شخصی شما — روند عملکرد، نقاط قوت و اقدامات پیشنهادی در یک نگاه.</p>
                 </div>
             </div>
             <div class="flex items-center gap-3 rounded-md bg-gradient-to-r from-indigo-600 to-violet-600 px-5 py-3 text-white shadow-sm">
@@ -70,7 +70,7 @@
         </div>
     </section>
 
-    <div class="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+    <div class="grid gap-4 sm:grid-cols-2 xl:grid-cols-4" data-tour="dashboard-stats">
         <x-saas.stat-card label="پیشرفت هفتگی" :value="$cockpit['weekly_progress'] ?: '—'" :hint="($cockpit['weekly_delta'] >= 0 ? '+' : '').$cockpit['weekly_delta'].' نسبت به هفته قبل'" />
         <x-saas.stat-card label="پیشرفت ماهانه" :value="$cockpit['monthly_progress'] ?: '—'" :hint="($cockpit['monthly_delta'] >= 0 ? '+' : '').$cockpit['monthly_delta'].' نسبت به ماه قبل'" />
         <x-saas.stat-card label="تعداد تماس" :value="$cockpit['call_count']" :hint="$cockpit['analyzed_count'].' تحلیل‌شده'" />
@@ -79,7 +79,7 @@
         <x-saas.stat-card label="روند بهبود" :value="($cockpit['monthly_delta'] >= 0 ? '+' : '').$cockpit['monthly_delta']" hint="تغییر امتیاز ماهانه" />
     </div>
 
-    <div class="grid gap-6 lg:grid-cols-2">
+    <div class="grid gap-6 lg:grid-cols-2" data-tour="dashboard-trends">
         <div class="saas-card">
             <h2 class="text-lg font-semibold">روند عملکرد</h2>
             <p class="mt-1 text-sm text-zinc-500">میانگین امتیاز روزانه در ۳۰ روز اخیر</p>
@@ -89,7 +89,10 @@
                 </div>
             @else
                 <div class="mt-4">
-                    <x-saas.empty-state title="هنوز داده روندی وجود ندارد" description="با تحلیل تماس‌ها، امتیازها اینجا نمایش داده می‌شوند." />
+                    <x-saas.empty-state
+                        title="@lang('ui.empty.chart_trend.title')"
+                        description="@lang('ui.empty.chart_trend.description')"
+                    />
                 </div>
             @endif
         </div>
@@ -103,13 +106,16 @@
                 </div>
             @else
                 <div class="mt-4">
-                    <x-saas.empty-state title="داده رضایت وجود ندارد" description="روند احساسات به مرور زمان شکل می‌گیرد." />
+                    <x-saas.empty-state
+                        title="@lang('ui.empty.chart_satisfaction.title')"
+                        description="@lang('ui.empty.chart_satisfaction.description')"
+                    />
                 </div>
             @endif
         </div>
     </div>
 
-    <div class="grid gap-6 lg:grid-cols-3">
+    <div class="grid gap-6 lg:grid-cols-3" data-tour="dashboard-summary">
         <div class="saas-card lg:col-span-2">
             <div class="flex items-center justify-between">
                 <h2 class="text-lg font-semibold">عملکرد من</h2>
@@ -147,7 +153,7 @@
         </div>
     </div>
 
-    <div class="grid gap-6 lg:grid-cols-2">
+    <div class="grid gap-6 lg:grid-cols-2" data-tour="dashboard-strengths">
         <div class="saas-card">
             <h2 class="text-lg font-semibold">نقاط قوت پرتکرار</h2>
             <p class="mt-1 text-sm text-zinc-500">نکاتی که در تماس‌های اخیر شما بیشترین تکرار را داشته‌اند</p>
@@ -159,7 +165,10 @@
                         <span class="shrink-0 text-xs text-zinc-500">{{ $item['count'] }} بار</span>
                     </li>
                 @empty
-                    <x-saas.empty-state title="نقطه قوتی ثبت نشده" />
+                    <x-saas.empty-state
+                        title="@lang('ui.empty.no_strengths.title')"
+                        description="@lang('ui.empty.no_strengths.description')"
+                    />
                 @endforelse
             </ul>
         </div>
@@ -181,7 +190,10 @@
                         <span class="shrink-0 text-xs text-zinc-500">{{ $item['count'] }} بار</span>
                     </li>
                 @empty
-                    <x-saas.empty-state title="نقطه قابل بهبودی ثبت نشده" />
+                    <x-saas.empty-state
+                        title="@lang('ui.empty.no_improvements.title')"
+                        description="@lang('ui.empty.no_improvements.description')"
+                    />
                 @endforelse
             </ul>
         </div>
@@ -203,7 +215,10 @@
                         <p class="mt-1 text-sm text-zinc-500">{{ Str::limit($call['summary'], 100) }}</p>
                     </a>
                 @empty
-                    <x-saas.empty-state title="هنوز تماسی نیست" />
+                    <x-saas.empty-state
+                        title="@lang('ui.empty.no_calls.title')"
+                        description="@lang('ui.empty.no_calls.description')"
+                    />
                 @endforelse
             </div>
         </div>
@@ -217,14 +232,16 @@
                         <span>{{ $item['action'] }} <span class="text-zinc-400">· {{ $item['date'] }}</span></span>
                     </li>
                 @empty
-                    <x-saas.empty-state title="پیگیری‌ای وجود ندارد" description="پس از تحلیل تماس‌ها، هوش مصنوعی اقدامات را پیشنهاد می‌دهد." />
+                    <x-saas.empty-state
+                        title="@lang('ui.empty.no_followups.title')"
+                        description="@lang('ui.empty.no_followups.description')"
+                    />
                 @endforelse
             </ul>
         </div>
     </div>
 
-    <div class="saas-card">
-        <h2 class="text-lg font-semibold">پیشنهادهای من</h2>
+    <div class="saas-card" data-tour="dashboard-recommendations">
         <p class="mt-1 text-sm text-zinc-500">حوزه‌های تمرکز مربیگری بر اساس گفتگوهای اخیر شما</p>
         <div class="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
             @forelse ($recommendations as $rec)
@@ -234,7 +251,10 @@
                     <p class="mt-1 text-sm text-zinc-500">{{ $rec['tip'] }}</p>
                 </div>
             @empty
-                <x-saas.empty-state title="هنوز پیشنهادی نیست" description="برای دریافت بینش‌های مربیگری به تحلیل تماس‌ها ادامه دهید." />
+                <x-saas.empty-state
+                    title="@lang('ui.empty.no_recommendations.title')"
+                    description="@lang('ui.empty.no_recommendations.description')"
+                />
             @endforelse
         </div>
     </div>

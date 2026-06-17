@@ -16,8 +16,8 @@
     </div>
 
     <div class="saas-card grid gap-4 sm:grid-cols-4">
-        <div><span class="text-sm text-zinc-500">منبع</span><p class="font-medium">آپلود دستی</p></div>
-        <div><span class="text-sm text-zinc-500">آپلودکننده</span><p class="font-medium">{{ $upload->uploader?->name ?? '—' }}</p></div>
+        <div><span class="text-sm text-zinc-500">منبع</span><p class="font-medium">بارگذاری دستی</p></div>
+        <div><span class="text-sm text-zinc-500">بارگذاری‌کننده</span><p class="font-medium">{{ $upload->uploader?->name ?? '—' }}</p></div>
         <div><span class="text-sm text-zinc-500">مشتری</span><p class="font-medium">{{ $upload->customer_name ?? '—' }}</p></div>
         <div><span class="text-sm text-zinc-500">دسته‌بندی</span><p class="font-medium">{{ $upload->category ?? '—' }}</p></div>
     </div>
@@ -75,7 +75,10 @@
             </div>
         @endif
     @else
-        <x-saas.empty-state title="تحلیل در انتظار" description="این آپلود هنوز در حال پردازش است." />
+        <x-saas.empty-state
+            title="@lang('ui.processing.pending_title')"
+            description="@lang('ui.processing.pending_description')"
+        />
     @endif
 </div>
 

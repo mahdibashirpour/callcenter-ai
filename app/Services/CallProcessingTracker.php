@@ -129,7 +129,7 @@ class CallProcessingTracker
 
         $this->broadcast($job, notification: [
             'type' => 'success',
-            'message' => 'تحلیل با موفقیت تکمیل شد.',
+            'message' => __('ui.processing.success_toast'),
             'url' => null,
             'call_id' => $job->call_id,
             'job_uuid' => $job->job_uuid,
@@ -180,7 +180,7 @@ class CallProcessingTracker
 
         $this->broadcast($job, notification: [
             'type' => 'error',
-            'message' => 'تحلیل ناموفق بود. لطفاً گزارش‌ها را بررسی کنید.',
+            'message' => __('ui.processing.failed_toast'),
             'url' => null,
             'call_id' => $job->call_id,
             'job_uuid' => $job->job_uuid,

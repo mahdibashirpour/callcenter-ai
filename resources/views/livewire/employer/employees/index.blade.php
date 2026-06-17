@@ -1,7 +1,7 @@
 <div class="saas-page">
-    <x-saas.page-header data-tour="page-header" title="کارشناسان" description="مدیریت تیم و دسترسی‌ها.">
+    <x-saas.page-header data-tour="page-header" title="کارشناسان" description="مدیریت تیم تماس، دسترسی‌ها و پیگیری عملکرد کارشناسان.">
         <x-slot:actions>
-            <a href="{{ route('employer.employees.create') }}" class="saas-btn-primary">افزودن کارشناس</a>
+            <a href="{{ route('employer.employees.create') }}" class="saas-btn-primary">@lang('ui.cta.add_employee')</a>
         </x-slot:actions>
     </x-saas.page-header>
 
@@ -48,7 +48,12 @@
                 @empty
                     <tr>
                         <td colspan="6" class="!py-12">
-                            <x-saas.empty-state title="هنوز کارشناسی وجود ندارد" description="اولین عضو تیم خود را اضافه کنید." :action="route('employer.employees.create')" actionLabel="افزودن کارشناس" />
+                            <x-saas.empty-state
+                                title="@lang('ui.empty.no_employees.title')"
+                                description="@lang('ui.empty.no_employees.description')"
+                                :action="route('employer.employees.create')"
+                                :actionLabel="__('ui.cta.add_employee')"
+                            />
                         </td>
                     </tr>
                 @endforelse

@@ -87,8 +87,11 @@
                     <x-saas.agent-performance-card :agent="$agent" :href="$profileUrl($agent)" />
                 </div>
             @empty
-                <div class="col-span-full rounded-lg border border-dashed border-zinc-300 p-10 text-center text-sm text-zinc-500 dark:border-zinc-700">
-                    در این بازه فعالیتی ثبت نشده است.
+                <div class="col-span-full">
+                    <x-saas.empty-state
+                        title="@lang('ui.empty.no_activity.title')"
+                        description="@lang('ui.empty.no_activity.description')"
+                    />
                 </div>
             @endforelse
         </div>
@@ -203,7 +206,7 @@
                         </li>
                     @empty
                         <li class="rounded-lg border border-dashed border-zinc-200 px-3 py-4 text-center text-xs text-zinc-500 dark:border-zinc-700">
-                            داده کافی برای رتبه‌بندی وجود ندارد.
+                            هنوز داده کافی برای رتبه‌بندی نیست.
                         </li>
                     @endforelse
                 </ol>

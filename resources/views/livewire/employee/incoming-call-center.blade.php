@@ -5,7 +5,7 @@
                 <div class="rounded-t-2xl bg-gradient-to-r from-indigo-600 to-violet-600 px-6 py-4 text-white">
                     <p class="text-sm font-medium uppercase tracking-wider opacity-80">تماس ورودی</p>
                     <p class="mt-1 text-2xl font-bold">{{ $incomingCall['caller_number'] ?? 'نامشخص' }}</p>
-                    <p class="mt-1 text-xs opacity-75">شناسه تماس‌گیرنده از ارائه‌دهنده VoIP</p>
+                    <p class="mt-1 text-xs opacity-75">شناسه تماس‌گیرنده از سیستم تلفنی</p>
                 </div>
                 <div class="space-y-3 px-6 py-5">
                     @if ($incomingCall['customer_name'] ?? null)
@@ -15,11 +15,11 @@
                         </div>
                     @else
                         <div class="rounded-lg bg-amber-50 px-3 py-2 text-xs text-amber-800 dark:bg-amber-950/40 dark:text-amber-200">
-                            راهنمای شناسه تماس‌گیرنده: نام هنوز شناسایی نشده است.
+                            نام این تماس‌گیرنده هنوز شناسایی نشده است.
                             @unless ($hasCrm)
-                                CRM را متصل کنید تا این شماره با یک مخاطب مطابقت داده شود.
+                                CRM را متصل کنید تا شماره با مخاطب موجود مطابقت داده شود.
                             @else
-                                CRM متصل است — نام زمانی نمایش داده می‌شود که این شماره با یک مخاطب مطابقت داشته باشد.
+                                CRM متصل است — نام پس از تطبیق شماره با مخاطب نمایش داده می‌شود.
                             @endunless
                         </div>
                     @endif
@@ -120,14 +120,14 @@
 
                 @if (! $hasCrm || ! $hasVoip)
                     <div class="space-y-2 rounded-lg border border-zinc-200 bg-zinc-50 p-4 text-xs text-zinc-600 dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-400">
-                        <p class="font-medium text-zinc-700 dark:text-zinc-300">راهنمای یکپارچه‌سازی</p>
+                        <p class="font-medium text-zinc-700 dark:text-zinc-300">یکپارچه‌سازی برای بینش بهتر</p>
                         @unless ($hasVoip)
-                            <p><strong>VoIP:</strong> ارائه‌دهنده تلفن خود را متصل کنید تا شناسه تماس‌گیرنده و پاپ‌آپ‌های زنده به‌صورت خودکار کار کنند.</p>
+                            <p><strong>تلفن:</strong> سیستم تلفنی را متصل کنید تا تماس‌های ورودی و پاپ‌آپ زنده به‌صورت خودکار فعال شوند.</p>
                         @endunless
                         @unless ($hasCrm)
-                            <p><strong>CRM:</strong> CRM را متصل کنید تا نام تماس‌گیرنده شناسایی شود و تاریخچه مشتری برای این شماره بارگذاری گردد.</p>
+                            <p><strong>CRM:</strong> CRM را متصل کنید تا نام تماس‌گیرنده شناسایی شود و تاریخچه مشتری بارگذاری گردد.</p>
                         @endunless
-                        <p><strong>شناسه تماس‌گیرنده:</strong> از داده تماس ورودی (<code>caller_number</code>) نمایش داده می‌شود. CRM در صورت مطابقت، آن را با نام مخاطب تکمیل می‌کند.</p>
+                        <p><strong>شناسایی تماس‌گیرنده:</strong> شماره از تماس ورودی نمایش داده می‌شود و CRM در صورت تطبیق، آن را با نام مخاطب تکمیل می‌کند.</p>
                     </div>
                 @endif
             </div>

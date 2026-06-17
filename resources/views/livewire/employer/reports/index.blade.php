@@ -200,7 +200,7 @@
         <x-saas.stat-card label="کل لیدها" :value="number_format($kpis['total_leads'])" />
         <x-saas.stat-card label="نگرانی‌های ثبت‌شده" :value="number_format($kpis['total_concerns'])" />
         <x-saas.stat-card label="میانگین مدت تماس" :value="$kpis['average_call_duration_label']" />
-        <x-saas.stat-card label="هزینه AI" :value="$kpis['total_ai_cost']" :hint="number_format($kpis['total_tokens']).' توکن'" />
+        <x-saas.stat-card label="هزینه تحلیل" :value="$kpis['total_ai_cost']" :hint="number_format($kpis['total_tokens']).' توکن'" />
         <x-saas.stat-card label="برترین کارشناس" :value="$kpis['top_employee']" :hint="'امتیاز: '.$kpis['top_employee_score']" />
     </div>
     </div>
@@ -222,7 +222,7 @@
                 </div>
             @else
                 <div class="mt-4">
-                    <x-saas.empty-state title="داده فعالیتی وجود ندارد" description="پس از ثبت تماس در این بازه، نمودار فعالیت پر می‌شود." />
+                    <x-saas.empty-state title="@lang('ui.empty.no_activity.title')" description="@lang('ui.empty.no_activity.description')" />
                 </div>
             @endif
         </div>
@@ -243,7 +243,7 @@
                 </div>
             @else
                 <div class="mt-4">
-                    <x-saas.empty-state title="داده کیفیتی وجود ندارد" description="با تحلیل تماس‌های بیشتر، روند کیفیت اینجا نمایش داده می‌شود." />
+                    <x-saas.empty-state title="@lang('ui.empty.chart_trend.title')" description="@lang('ui.empty.chart_trend.description')" />
                 </div>
             @endif
         </div>
@@ -264,7 +264,7 @@
                 </div>
             @else
                 <div class="mt-4">
-                    <x-saas.empty-state title="داده لید وجود ندارد" description="اطلاعات لید پس از تحلیل تماس‌ها ثبت می‌شود." />
+                    <x-saas.empty-state title="@lang('ui.empty.chart_lead.title')" description="@lang('ui.empty.chart_lead.description')" />
                 </div>
             @endif
         </div>
@@ -285,7 +285,7 @@
                 </div>
             @else
                 <div class="mt-4">
-                    <x-saas.empty-state title="نگرانی ثبت نشده" description="نگرانی‌های مشتریان پس از تحلیل تماس‌ها اینجا نمایش داده می‌شوند." />
+                    <x-saas.empty-state title="هنوز نگرانی مشخصی نیست" description="با تحلیل تماس‌های بیشتر، نگرانی‌های پرتکرار مشتریان اینجا دیده می‌شود." />
                 </div>
             @endif
         </div>
@@ -346,7 +346,7 @@
                         </li>
                     @empty
                         <li class="rounded-lg border border-dashed border-zinc-200 px-3 py-4 text-center text-xs text-zinc-500 dark:border-zinc-700">
-                            داده کافی برای رتبه‌بندی وجود ندارد.
+                            هنوز داده کافی برای رتبه‌بندی نیست.
                         </li>
                     @endforelse
                 </ol>
@@ -356,14 +356,14 @@
 
     <div class="saas-card">
         <h2 class="text-lg font-semibold">مصرف هوش مصنوعی</h2>
-        <p class="mt-1 text-sm text-zinc-500">تعداد تحلیل‌ها و هزینه مصرف AI در بازه انتخاب‌شده</p>
+        <p class="mt-1 text-sm text-zinc-500">تعداد تحلیل‌ها و هزینه مصرف در بازه انتخاب‌شده</p>
         @if ($hasAiTrend)
             <div class="mt-4 h-64" wire:key="reports-ai-{{ md5(json_encode($aiTrend)) }}">
                 <canvas id="chart-ai-usage" data-report-chart data-type="line" data-config='@json($aiChart)'></canvas>
             </div>
         @else
             <div class="mt-4">
-                <x-saas.empty-state title="داده مصرف AI وجود ندارد" description="پس از تحلیل تماس‌ها، روند مصرف هوش مصنوعی اینجا نمایش داده می‌شود." />
+                <x-saas.empty-state title="@lang('ui.empty.no_wallet_usage.title')" description="@lang('ui.empty.no_wallet_usage.description')" />
             </div>
         @endif
     </div>
@@ -384,7 +384,7 @@
 
                 <div class="overflow-x-auto p-4 sm:p-6">
                     @if ($drilldownAnalyses->isEmpty())
-                        <x-saas.empty-state title="رکوردی یافت نشد" description="در این بخش تحلیلی برای نمایش وجود ندارد." />
+                        <x-saas.empty-state title="@lang('ui.empty.no_analyses.title')" description="@lang('ui.empty.no_analyses.description')" />
                     @else
                         <table class="saas-table min-w-[36rem]">
                             <thead>

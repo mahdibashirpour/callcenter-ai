@@ -12,7 +12,7 @@ class UserFacingErrorTest extends TestCase
         config(['app.debug' => false]);
 
         $this->assertSame(
-            'خطا در پردازش فایل.',
+            __('ui.processing.upload_error'),
             UserFacingError::upload('SQLSTATE connection refused')
         );
     }
@@ -22,7 +22,7 @@ class UserFacingErrorTest extends TestCase
         config(['app.debug' => false]);
 
         $this->assertSame(
-            'خطا در پردازش فایل. لطفاً دوباره تلاش کنید یا با پشتیبانی تماس بگیرید.',
+            __('ui.processing.error'),
             UserFacingError::processing('No recording URL available for call.')
         );
     }

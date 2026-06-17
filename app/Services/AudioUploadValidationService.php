@@ -29,7 +29,7 @@ class AudioUploadValidationService
 
         if (! $settings->is_active) {
             throw ValidationException::withMessages([
-                'audio' => 'آپلود دستی فایل صوتی در حال حاضر غیرفعال است.',
+                'audio' => 'بارگذاری دستی تماس در حال حاضر غیرفعال است. با مدیر سازمان تماس بگیرید.',
             ]);
         }
 
@@ -38,7 +38,7 @@ class AudioUploadValidationService
 
         if (! in_array($extension, $allowed, true)) {
             throw ValidationException::withMessages([
-                'audio' => 'فرمت فایل پشتیبانی نمی‌شود. فرمت‌های مجاز: '.implode('، ', $allowed).'.',
+                'audio' => 'این فرمت پشتیبانی نمی‌شود. فرمت‌های مجاز: '.implode('، ', $allowed).'.',
             ]);
         }
 
@@ -46,7 +46,7 @@ class AudioUploadValidationService
             $maxMb = round($settings->max_file_size_bytes / 1024 / 1024, 1);
 
             throw ValidationException::withMessages([
-                'audio' => "حجم فایل از حداکثر مجاز {$maxMb} مگابایت بیشتر است.",
+                'audio' => "حجم فایل بیش از حد مجاز ({$maxMb} مگابایت) است. فایل کوچک‌تری انتخاب کنید.",
             ]);
         }
 
@@ -55,7 +55,7 @@ class AudioUploadValidationService
 
         if ($allowedMimes && ! in_array($mimeType, $allowedMimes, true) && ! str_starts_with($mimeType, 'audio/')) {
             throw ValidationException::withMessages([
-                'audio' => 'فایل آپلودشده یک فایل صوتی معتبر به نظر نمی‌رسد.',
+                'audio' => 'فایل انتخاب‌شده معتبر نیست. لطفاً یک فایل صوتی واقعی بارگذاری کنید.',
             ]);
         }
 
@@ -65,7 +65,7 @@ class AudioUploadValidationService
             $maxMinutes = (int) round($settings->max_duration_seconds / 60);
 
             throw ValidationException::withMessages([
-                'audio' => "مدت فایل صوتی از حداکثر مجاز {$maxMinutes} دقیقه بیشتر است.",
+                'audio' => "مدت تماس بیش از حد مجاز ({$maxMinutes} دقیقه) است. فایل کوتاه‌تری انتخاب کنید.",
             ]);
         }
 
@@ -83,7 +83,7 @@ class AudioUploadValidationService
     {
         if (! is_file($absolutePath)) {
             throw ValidationException::withMessages([
-                'audio' => 'فایل نمونه یافت نشد.',
+                'audio' => 'فایل مکالمه نمونه در دسترس نیست.',
             ]);
         }
 
@@ -91,7 +91,7 @@ class AudioUploadValidationService
 
         if (! $settings->is_active) {
             throw ValidationException::withMessages([
-                'audio' => 'آپلود دستی فایل صوتی در حال حاضر غیرفعال است.',
+                'audio' => 'بارگذاری دستی تماس در حال حاضر غیرفعال است. با مدیر سازمان تماس بگیرید.',
             ]);
         }
 
@@ -100,7 +100,7 @@ class AudioUploadValidationService
 
         if (! in_array($extension, $allowed, true)) {
             throw ValidationException::withMessages([
-                'audio' => 'فرمت فایل پشتیبانی نمی‌شود. فرمت‌های مجاز: '.implode('، ', $allowed).'.',
+                'audio' => 'این فرمت پشتیبانی نمی‌شود. فرمت‌های مجاز: '.implode('، ', $allowed).'.',
             ]);
         }
 
@@ -110,7 +110,7 @@ class AudioUploadValidationService
             $maxMb = round($settings->max_file_size_bytes / 1024 / 1024, 1);
 
             throw ValidationException::withMessages([
-                'audio' => "حجم فایل از حداکثر مجاز {$maxMb} مگابایت بیشتر است.",
+                'audio' => "حجم فایل بیش از حد مجاز ({$maxMb} مگابایت) است. فایل کوچک‌تری انتخاب کنید.",
             ]);
         }
 
@@ -119,7 +119,7 @@ class AudioUploadValidationService
 
         if ($allowedMimes && ! in_array($mimeType, $allowedMimes, true) && ! str_starts_with($mimeType, 'audio/')) {
             throw ValidationException::withMessages([
-                'audio' => 'فایل نمونه یک فایل صوتی معتبر به نظر نمی‌رسد.',
+                'audio' => 'فایل مکالمه نمونه معتبر نیست. با پشتیبانی تماس بگیرید.',
             ]);
         }
 
@@ -129,7 +129,7 @@ class AudioUploadValidationService
             $maxMinutes = (int) round($settings->max_duration_seconds / 60);
 
             throw ValidationException::withMessages([
-                'audio' => "مدت فایل صوتی از حداکثر مجاز {$maxMinutes} دقیقه بیشتر است.",
+                'audio' => "مدت تماس بیش از حد مجاز ({$maxMinutes} دقیقه) است. فایل کوتاه‌تری انتخاب کنید.",
             ]);
         }
 

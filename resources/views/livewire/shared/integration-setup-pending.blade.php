@@ -1,6 +1,6 @@
 @props([
-    'title' => 'سیستم در حال راه‌اندازی است',
-    'description' => 'تنظیمات CRM یا VoIP هنوز کامل نشده‌اند.',
+    'title' => 'یکپارچه‌سازی در حال راه‌اندازی است',
+    'description' => 'تنظیمات اتصال هنوز کامل نشده است.',
 ])
 
 <div class="saas-card border border-amber-200 bg-amber-50/60 dark:border-amber-900/50 dark:bg-amber-950/30">
@@ -13,7 +13,7 @@
         <div class="space-y-2">
             <h2 class="text-lg font-semibold text-amber-950 dark:text-amber-50">{{ $title }}</h2>
             <p class="text-sm leading-6 text-amber-900/90 dark:text-amber-100/90">{{ $description }}</p>
-            <p class="text-xs text-amber-700 dark:text-amber-300">در حال اتصال به سرویس‌ها... پس از تکمیل راه‌اندازی، تنظیمات این بخش نمایش داده می‌شود.</p>
+            <p class="text-xs text-amber-700 dark:text-amber-300">پس از تکمیل راه‌اندازی، تنظیمات و وضعیت اتصال این بخش نمایش داده می‌شود.</p>
         </div>
     </div>
 </div>

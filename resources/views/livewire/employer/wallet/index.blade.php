@@ -94,17 +94,17 @@
 <div class="saas-page space-y-6">
     <x-saas.page-header
         data-tour="page-header"
-        title="اعتبار هوش مصنوعی"
-        description="مدیریت موجودی، پایش مصرف و بررسی روند هزینه تحلیل‌های هوش مصنوعی."
+        title="اعتبار تحلیل"
+        description="مدیریت موجودی، پایش مصرف و بررسی روند هزینه تحلیل تماس‌ها."
     />
 
     @if ($criticalBalance)
         <div class="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-900 dark:border-red-900/50 dark:bg-red-950/40 dark:text-red-100">
-            <strong>موجودی بحرانی.</strong> اعتبار شما تقریباً تمام شده است. قبل از آپلود یا تحلیل جدید، با مدیر سازمان برای شارژ کیف پول تماس بگیرید.
+            <strong>اعتبار تحلیل رو به اتمام است.</strong> قبل از بارگذاری یا تحلیل تماس جدید، اعتبار خود را شارژ کنید.
         </div>
     @elseif ($lowBalance)
         <div class="rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900 dark:border-amber-900/50 dark:bg-amber-950/40 dark:text-amber-100">
-            <strong>هشدار موجودی کم.</strong> موجودی کیف پول در حال اتمام است. برای جلوگیری از توقف تحلیل‌ها، شارژ اعتبار را در نظر بگیرید.
+            <strong>موجودی کم است.</strong> برای جلوگیری از توقف تحلیل تماس‌ها، اعتبار تحلیل را شارژ کنید.
         </div>
     @endif
 
@@ -117,7 +117,7 @@
                     @if ($estimatedDaysRemaining !== null && $estimatedDaysRemaining > 0)
                         با میانگین مصرف ۳۰ روز اخیر، حدود {{ number_format($estimatedDaysRemaining) }} روز اعتبار باقی می‌ماند.
                     @elseif ($avgDailyCost <= 0)
-                        هنوز الگوی مصرف مشخصی ثبت نشده است.
+                        هنوز الگوی مصرفی شکل نگرفته — پس از اولین تحلیل، پیش‌بینی باقی‌مانده دقیق‌تر می‌شود.
                     @else
                         موجودی فعلی برای ادامه تحلیل‌ها کافی نیست.
                     @endif
@@ -178,7 +178,7 @@
                 </div>
             @else
                 <div class="mt-4">
-                    <x-saas.empty-state title="هنوز مصرفی ثبت نشده" description="پس از اولین تحلیل هوش مصنوعی، نمودار مصرف روزانه اینجا نمایش داده می‌شود." />
+                    <x-saas.empty-state title="@lang('ui.empty.no_wallet_usage.title')" description="@lang('ui.empty.no_wallet_usage.description')" />
                 </div>
             @endif
         </div>
@@ -192,7 +192,7 @@
                 </div>
             @else
                 <div class="mt-4">
-                    <x-saas.empty-state title="داده توکنی وجود ندارد" description="مصرف توکن پس از تحلیل تماس‌ها ثبت می‌شود." />
+                    <x-saas.empty-state title="@lang('ui.empty.no_wallet_usage.title')" description="@lang('ui.empty.no_wallet_usage.description')" />
                 </div>
             @endif
         </div>
@@ -206,7 +206,7 @@
                 </div>
             @else
                 <div class="mt-4">
-                    <x-saas.empty-state title="مصرف ماهانه ثبت نشده" description="پس از تحلیل تماس‌ها، ترکیب توکن‌ها اینجا نمایش داده می‌شود." />
+                    <x-saas.empty-state title="@lang('ui.empty.no_wallet_usage.title')" description="@lang('ui.empty.no_wallet_usage.description')" />
                 </div>
             @endif
         </div>
@@ -220,7 +220,7 @@
                 </div>
             @else
                 <div class="mt-4">
-                    <x-saas.empty-state title="داده ماهانه‌ای وجود ندارد" description="با گذشت زمان، روند هزینه ماهانه اینجا شکل می‌گیرد." />
+                    <x-saas.empty-state title="@lang('ui.empty.no_wallet_usage.title')" description="@lang('ui.empty.no_wallet_usage.description')" />
                 </div>
             @endif
         </div>
@@ -231,13 +231,13 @@
             <div class="flex items-center justify-between gap-3">
                 <div>
                     <h2 class="text-lg font-semibold">تراکنش‌های اخیر</h2>
-                    <p class="mt-1 text-sm text-zinc-500">واریز، مصرف و تعدیل‌های کیف پول</p>
+                    <p class="mt-1 text-sm text-zinc-500">واریز، مصرف تحلیل و تعدیل‌های اعتبار</p>
                 </div>
             </div>
 
             @if ($recentTransactions->isEmpty())
                 <div class="mt-4">
-                    <x-saas.empty-state title="تراکنشی ثبت نشده" description="تاریخچه تراکنش‌ها پس از شارژ یا مصرف اعتبار نمایش داده می‌شود." />
+                    <x-saas.empty-state title="@lang('ui.empty.no_transactions.title')" description="@lang('ui.empty.no_transactions.description')" />
                 </div>
             @else
                 <div class="mt-4 overflow-x-auto">

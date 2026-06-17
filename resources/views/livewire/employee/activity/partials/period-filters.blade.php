@@ -1,6 +1,7 @@
 <div
     class="saas-card sticky top-0 z-10 shadow-sm"
     wire:key="activity-period-{{ $period }}"
+    data-tour="activity-filters"
 >
     <div class="flex flex-wrap items-center justify-between gap-3">
         <div>

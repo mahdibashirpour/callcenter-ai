@@ -1,13 +1,13 @@
 <div class="space-y-8">
     <div data-tour="voip-header">
         <h1 class="text-3xl font-semibold tracking-tight">VoIP</h1>
-        <p class="mt-2 text-zinc-500">سیستم تلفن خود را متصل کنید تا تماس‌های ورودی و شناسه تماس‌گیرنده را در فضای کاری کارشناس دریافت کنید.</p>
+        <p class="mt-2 text-zinc-500">سیستم تلفن خود را متصل کنید تا تماس‌های ورودی و شناسه تماس‌گیرنده در فضای کاری کارشناس نمایش داده شود.</p>
     </div>
 
     @unless ($isComplete)
         @include('livewire.shared.integration-setup-pending', [
-            'title' => 'سیستم در حال راه‌اندازی است',
-            'description' => 'تنظیمات VoIP هنوز کامل نشده‌اند. پس از اتصال و تأیید سرویس، جزئیات تماس و وب‌هوک اینجا نمایش داده می‌شود.',
+            'title' => 'اتصال VoIP در حال راه‌اندازی است',
+            'description' => 'تنظیمات تلفن سازمانی هنوز کامل نشده. پس از اتصال و تأیید سرویس، جزئیات تماس و وب‌هوک اینجا نمایش داده می‌شود.',
         ])
     @else
         <div class="rounded-lg border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-900 dark:border-emerald-900/50 dark:bg-emerald-950/40 dark:text-emerald-100" data-tour="voip-guide">
@@ -54,7 +54,7 @@
                             <td>{{ shamsi($call->started_at, 'datetime') }}</td>
                         </tr>
                     @empty
-                        <tr><td colspan="4" class="text-center text-zinc-500">هنوز تماسی ثبت نشده است.</td></tr>
+                        <tr><td colspan="4" class="text-center text-zinc-500">هنوز تماسی از طریق VoIP ثبت نشده — پس از اتصال، تماس‌های ورودی اینجا دیده می‌شوند.</td></tr>
                     @endforelse
                 </tbody>
             </table>

@@ -75,11 +75,11 @@ class Create extends Component
         OrganizationActivityLogger::log(
             organizationId: $organizationId,
             type: 'employee_created',
-            title: 'کارشناس ایجاد شد',
-            description: "{$data['first_name']} {$data['last_name']} اضافه شد.",
+            title: 'کارشناس جدید ثبت شد',
+            description: "{$data['first_name']} {$data['last_name']} به تیم اضافه شد.",
         );
 
-        session()->flash('status', 'کارشناس با موفقیت ایجاد شد.');
+        session()->flash('status', __('ui.success.employee_created'));
 
         $this->redirect(route('employer.employees.index'), navigate: true);
     }

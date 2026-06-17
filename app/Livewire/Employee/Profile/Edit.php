@@ -75,7 +75,7 @@ class Edit extends Component
 
         $this->persistAvatar($user);
 
-        $this->js("window.dispatchEvent(new CustomEvent('show-toast', { detail: { type: 'success', message: 'پروفایل به‌روزرسانی شد.' } }))");
+        $this->js("window.dispatchEvent(new CustomEvent('show-toast', { detail: { type: 'success', message: '".__('ui.success.profile_saved')."' } }))");
     }
 
     public function render()

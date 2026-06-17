@@ -74,7 +74,10 @@
             </div>
         @endif
     @else
-        <x-saas.empty-state title="تحلیل در انتظار" description="آپلود شما در حال پردازش است. به‌زودی دوباره بررسی کنید." />
+        <x-saas.empty-state
+            title="@lang('ui.processing.pending_title')"
+            description="@lang('ui.processing.pending_description')"
+        />
     @endif
 </div>
 

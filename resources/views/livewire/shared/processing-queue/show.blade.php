@@ -8,8 +8,8 @@
             <p class="mt-2 text-sm text-zinc-500">{{ $job->file_name }}</p>
         </div>
         <div class="flex flex-wrap gap-2">
-            <a href="{{ $queueIndexUrl }}" class="saas-btn-secondary">بازگشت به صف</a>
-            <a href="{{ $uploadUrl }}" class="saas-btn-secondary">مشاهده نتیجه آپلود</a>
+            <a href="{{ $queueIndexUrl }}" class="saas-btn-secondary">@lang('ui.cta.view_queue')</a>
+            <a href="{{ $uploadUrl }}" class="saas-btn-secondary">مشاهده نتیجه بارگذاری</a>
         </div>
     </div>
 
@@ -41,7 +41,7 @@
     <div class="saas-card">
         <h2 class="text-lg font-semibold">اطلاعات کار</h2>
         <dl class="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3 text-sm">
-            <div><dt class="text-zinc-500">شروع آپلود</dt><dd class="font-medium">{{ shamsi($job->upload_started_at, 'datetime_seconds') }}</dd></div>
+            <div><dt class="text-zinc-500">شروع بارگذاری</dt><dd class="font-medium">{{ shamsi($job->upload_started_at, 'datetime_seconds') }}</dd></div>
             <div><dt class="text-zinc-500">ورود به صف</dt><dd class="font-medium">{{ shamsi($job->queued_at, 'datetime_seconds') }}</dd></div>
             <div><dt class="text-zinc-500">شروع پردازش</dt><dd class="font-medium">{{ shamsi($job->processing_started_at, 'datetime_seconds') }}</dd></div>
             <div><dt class="text-zinc-500">زمان تکمیل</dt><dd class="font-medium">{{ shamsi($job->completed_at, 'datetime_seconds') }}</dd></div>

@@ -2,7 +2,7 @@
     <div class="flex items-center justify-between">
         <div>
             <h1 class="text-3xl font-semibold tracking-tight">{{ $employee ? 'ویرایش کارشناس' : 'افزودن کارشناس' }}</h1>
-            <p class="mt-2 text-zinc-500">{{ $employee ? 'به‌روزرسانی جزئیات عضو تیم.' : 'دعوت عضو جدید به تیم.' }}</p>
+            <p class="mt-2 text-zinc-500">{{ $employee ? 'به‌روزرسانی اطلاعات و دسترسی کارشناس.' : 'کارشناس جدید را به تیم تماس اضافه کنید.' }}</p>
         </div>
         <a href="{{ route('employer.employees.index') }}" class="saas-btn-secondary">بازگشت</a>
     </div>

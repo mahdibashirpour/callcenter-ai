@@ -79,7 +79,7 @@ class EmployeeDashboardAnalytics
         }
 
         if (empty($badges)) {
-            $badges[] = ['icon' => 'sparkles', 'title' => 'شروع مسیر', 'description' => 'با تحلیل تماس‌های بیشتر نشان‌ها را باز کنید'];
+            $badges[] = ['icon' => 'sparkles', 'title' => 'در مسیر رشد', 'description' => 'با تحلیل تماس‌های بیشتر، نشان‌های عملکرد را باز کنید'];
         }
 
         return $badges;

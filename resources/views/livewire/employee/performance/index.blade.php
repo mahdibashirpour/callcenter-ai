@@ -85,7 +85,7 @@
     $leadChart = [
         'labels' => collect($leadTrend)->pluck('label')->all(),
         'datasets' => [[
-            'label' => 'امتیاز لید',
+            'label' => 'امتیاز سرنخ',
             'data' => collect($leadTrend)->pluck('avg_score')->all(),
             'borderColor' => 'rgb(245, 158, 11)',
             'backgroundColor' => 'rgba(245, 158, 11, 0.12)',
@@ -105,7 +105,7 @@
 <div class="saas-page space-y-6" wire:loading.class="opacity-60" wire:target="{{ $filterLoadingTargets }}">
     <x-saas.filter-loading-overlay :target="$filterLoadingTargets" />
 
-    <section class="saas-hero saas-hero--accent">
+    <section class="saas-hero saas-hero--accent" data-tour="performance-hero">
         <div class="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
             <div class="flex items-start gap-5">
                 <x-saas.avatar :employee="$membership" size="xl" ring />
@@ -151,10 +151,10 @@
         'activePreset' => $activePreset,
     ])
 
-    <div class="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+    <div class="grid gap-4 sm:grid-cols-2 xl:grid-cols-4" data-tour="performance-stats">
         <x-saas.stat-card label="تماس‌های پاسخ‌داده" :value="$metrics['answered_calls'] ?? 0" :hint="($metrics['total_calls'] ?? 0).' کل'" />
         <x-saas.stat-card label="میانگین مدت مکالمه" :value="$metrics['average_duration_label'] ?? '—'" />
-        <x-saas.stat-card label="امتیاز لید فروش" :value="$metrics['average_lead_score'] ?: '—'" :trend="$deltas['lead_improvement_percent'] ?? null" />
+        <x-saas.stat-card label="امتیاز سرنخ فروش" :value="$metrics['average_lead_score'] ?: '—'" :trend="$deltas['lead_improvement_percent'] ?? null" />
         <x-saas.stat-card label="رضایت مشتری" :value="$metrics['average_sentiment'] ? $metrics['average_sentiment'].'%' : '—'" :trend="$deltas['sentiment_improvement_percent'] ?? null" />
         <x-saas.stat-card label="بهترین امتیاز" :value="$bestScore ?: '—'" />
         <x-saas.stat-card label="میانگین کیفیت" :value="$metrics['average_quality_score'] ?: '—'" :trend="$deltas['quality_improvement_percent'] ?? null" />
@@ -163,17 +163,17 @@
     @if ($analyzedInPeriod === 0)
         <div class="saas-card">
             <x-saas.empty-state
-                title="در این بازه تحلیلی ندارید"
-                description="پس از ثبت و تحلیل تماس‌ها، نمودارها و بینش‌های عملکرد اینجا نمایش داده می‌شوند."
+                title="@lang('ui.empty.no_analyses.title')"
+                description="@lang('ui.empty.no_analyses.description')"
             >
                 <div class="mt-6 flex flex-wrap justify-center gap-2">
                     <a href="{{ route('employee.calls') }}" class="saas-btn-secondary text-sm">تماس‌های من</a>
-                    <a href="{{ route('employee.uploads') }}" class="saas-btn-primary text-sm">آپلود تماس</a>
+                    <a href="{{ route('employee.uploads') }}" class="saas-btn-primary text-sm">@lang('ui.cta.upload_first_call')</a>
                 </div>
             </x-saas.empty-state>
         </div>
     @else
-        <div class="grid gap-6 lg:grid-cols-2">
+        <div class="grid gap-6 lg:grid-cols-2" data-tour="performance-charts">
             <div class="saas-card">
                 <h2 class="text-lg font-semibold">روند امتیاز مکالمه</h2>
                 <p class="mt-1 text-sm text-zinc-500">میانگین امتیاز در بازه انتخاب‌شده</p>
@@ -183,21 +183,27 @@
                     </div>
                 @else
                     <div class="mt-4">
-                        <x-saas.empty-state title="داده روند وجود ندارد" />
+                        <x-saas.empty-state
+                            title="@lang('ui.empty.chart_trend.title')"
+                            description="@lang('ui.empty.chart_trend.description')"
+                        />
                     </div>
                 @endif
             </div>
 
             <div class="saas-card">
                 <h2 class="text-lg font-semibold">حجم تماس‌ها</h2>
-                <p class="mt-1 text-sm text-zinc-500">تعداد تماس‌های ثبت‌شده در بازه</p>
+                <p class="mt-1 text-sm text-zinc-500">تعداد تماس‌های تحلیل‌شده در بازه</p>
                 @if ($hasVolumeTrend)
                     <div class="mt-4 h-56" wire:key="employee-volume-{{ $period }}">
                         <canvas id="employee-performance-volume" data-report-chart data-type="bar" data-config='@json($volumeChart)'></canvas>
                     </div>
                 @else
                     <div class="mt-4">
-                        <x-saas.empty-state title="داده حجم تماس وجود ندارد" />
+                        <x-saas.empty-state
+                            title="@lang('ui.empty.chart_volume.title')"
+                            description="@lang('ui.empty.chart_volume.description')"
+                        />
                     </div>
                 @endif
             </div>
@@ -211,21 +217,27 @@
                     </div>
                 @else
                     <div class="mt-4">
-                        <x-saas.empty-state title="داده رضایت وجود ندارد" />
+                        <x-saas.empty-state
+                            title="@lang('ui.empty.chart_satisfaction.title')"
+                            description="@lang('ui.empty.chart_satisfaction.description')"
+                        />
                     </div>
                 @endif
             </div>
 
             <div class="saas-card">
-                <h2 class="text-lg font-semibold">روند کیفیت لید</h2>
-                <p class="mt-1 text-sm text-zinc-500">میانگین امتیاز لید در طول زمان</p>
+                <h2 class="text-lg font-semibold">روند کیفیت سرنخ</h2>
+                <p class="mt-1 text-sm text-zinc-500">میانگین امتیاز سرنخ در طول زمان</p>
                 @if ($hasLeadTrend)
                     <div class="mt-4 h-56" wire:key="employee-lead-{{ $period }}">
                         <canvas id="employee-performance-lead" data-report-chart data-type="line" data-config='@json($leadChart)'></canvas>
                     </div>
                 @else
                     <div class="mt-4">
-                        <x-saas.empty-state title="داده لید وجود ندارد" />
+                        <x-saas.empty-state
+                            title="@lang('ui.empty.chart_lead.title')"
+                            description="@lang('ui.empty.chart_lead.description')"
+                        />
                     </div>
                 @endif
             </div>
@@ -259,7 +271,7 @@
                         @forelse ($coaching['training_areas'] as $area)
                             <li class="flex gap-2"><span class="text-indigo-500">•</span>{{ $area }}</li>
                         @empty
-                            <li class="text-zinc-500">پیشنهادی ثبت نشده</li>
+                            <li class="text-zinc-500">با تحلیل تماس‌های بیشتر، پیشنهادهای آموزشی اینجا ظاهر می‌شوند.</li>
                         @endforelse
                     </ul>
                 </div>
@@ -312,7 +324,11 @@
                         <p class="mt-1 text-sm text-zinc-500">{{ $rec['tip'] }}</p>
                     </div>
                 @empty
-                    <x-saas.empty-state class="sm:col-span-2" title="هنوز پیشنهادی نیست" description="با تحلیل تماس‌های بیشتر، حوزه‌های تمرکز اینجا ظاهر می‌شوند." />
+                    <x-saas.empty-state
+                        class="sm:col-span-2"
+                        title="@lang('ui.empty.no_recommendations.title')"
+                        description="@lang('ui.empty.no_recommendations.description')"
+                    />
                 @endforelse
             </div>
         </div>
@@ -347,7 +363,7 @@
                                 {{ $call['quality_score'] ?? '—' }}
                             </span>
                             <span class="rounded-lg bg-indigo-50 px-2.5 py-1 font-medium text-indigo-700 dark:bg-indigo-950/40 dark:text-indigo-300">
-                                لید {{ $call['lead_score'] ?? '—' }}
+                                سرنخ {{ $call['lead_score'] ?? '—' }}
                             </span>
                             @if ($call['sentiment'] ?? null)
                                 <span class="text-xs text-zinc-500">{{ $call['sentiment'] }}</span>
@@ -356,7 +372,10 @@
                     </div>
                 </a>
             @empty
-                <x-saas.empty-state title="تماسی در این بازه نیست" />
+                <x-saas.empty-state
+                    title="@lang('ui.empty.no_calls.title')"
+                    description="@lang('ui.empty.no_calls.description')"
+                />
             @endforelse
         </div>
     </section>

@@ -85,11 +85,12 @@
 
     <x-saas.page-header
         title="تماس‌های من"
-        description="تمام مکالمات تحلیل‌شده شما — با فیلتر، جستجو و نمودارهای عملکرد شخصی."
+        description="بینش‌های عمیق از تماس‌های تحلیل‌شده — با فیلتر و نمودار، عملکرد خود را بسنجید."
+        data-tour="page-header"
     >
         <x-slot:actions>
             <a href="{{ route('employee.performance') }}" class="saas-btn-secondary text-sm">عملکرد من</a>
-            <a href="{{ route('employee.uploads') }}" class="saas-btn-primary text-sm">آپلود تماس</a>
+            <a href="{{ route('employee.uploads') }}" class="saas-btn-primary text-sm">@lang('ui.cta.upload_first_call')</a>
         </x-slot:actions>
     </x-saas.page-header>
 
@@ -101,10 +102,10 @@
         'filter' => $filter,
     ])
 
-    <div class="grid gap-4 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-6">
+    <div class="grid gap-4 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-6" data-tour="calls-stats">
         <x-saas.stat-card label="تحلیل‌های فیلترشده" :value="number_format($overview['total'])" />
         <x-saas.stat-card label="میانگین امتیاز" :value="$overview['average_score'] ?: '—'" hint="کیفیت مکالمه" />
-        <x-saas.stat-card label="میانگین لید" :value="$overview['average_lead_score'] ?: '—'" :hint="$overview['high_lead_count'] ? $overview['high_lead_count'].' لید بالا' : null" />
+        <x-saas.stat-card label="میانگین سرنخ" :value="$overview['average_lead_score'] ?: '—'" :hint="$overview['high_lead_count'] ? $overview['high_lead_count'].' سرنخ با کیفیت بالا' : null" />
         <x-saas.stat-card label="رضایت مشتری" :value="$overview['average_sentiment'] ? $overview['average_sentiment'].'%' : '—'" :hint="$overview['dominant_sentiment']" />
         <x-saas.stat-card label="میانگین مدت تماس" :value="$overview['average_duration_label']" />
         <x-saas.stat-card
@@ -123,7 +124,7 @@
     @endif
 
     @if ($overview['total'] > 0)
-        <div class="grid gap-6 lg:grid-cols-2">
+        <div class="grid gap-6 lg:grid-cols-2" data-tour="calls-charts">
             <div class="saas-card">
                 <h2 class="text-lg font-semibold">روند کیفیت مکالمه</h2>
                 <p class="mt-1 text-sm text-zinc-500">میانگین امتیاز در بازه فیلتر فعلی</p>
@@ -133,7 +134,10 @@
                     </div>
                 @else
                     <div class="mt-4">
-                        <x-saas.empty-state title="داده روندی وجود ندارد" />
+                        <x-saas.empty-state
+                            title="@lang('ui.empty.chart_trend.title')"
+                            description="@lang('ui.empty.chart_trend.description')"
+                        />
                     </div>
                 @endif
             </div>
@@ -147,21 +151,27 @@
                     </div>
                 @else
                     <div class="mt-4">
-                        <x-saas.empty-state title="داده حجمی وجود ندارد" />
+                        <x-saas.empty-state
+                            title="@lang('ui.empty.chart_volume.title')"
+                            description="@lang('ui.empty.chart_volume.description')"
+                        />
                     </div>
                 @endif
             </div>
 
             <div class="saas-card">
-                <h2 class="text-lg font-semibold">توزیع کیفیت لید</h2>
-                <p class="mt-1 text-sm text-zinc-500">سطح لید در تماس‌های تحلیل‌شده</p>
+                <h2 class="text-lg font-semibold">توزیع کیفیت سرنخ</h2>
+                <p class="mt-1 text-sm text-zinc-500">سطح سرنخ در تماس‌های تحلیل‌شده</p>
                 @if ($hasLeadDist)
                     <div class="mt-4 mx-auto h-56 max-w-xs" wire:key="employee-call-lead-{{ md5(json_encode($leadDist)) }}">
                         <canvas id="employee-call-lead-dist" data-report-chart data-type="doughnut" data-config='@json($leadChart)'></canvas>
                     </div>
                 @else
                     <div class="mt-4">
-                        <x-saas.empty-state title="داده لید وجود ندارد" />
+                        <x-saas.empty-state
+                            title="@lang('ui.empty.chart_lead.title')"
+                            description="@lang('ui.empty.chart_lead.description')"
+                        />
                     </div>
                 @endif
             </div>
@@ -175,7 +185,10 @@
                     </div>
                 @else
                     <div class="mt-4">
-                        <x-saas.empty-state title="داده احساسات وجود ندارد" />
+                        <x-saas.empty-state
+                            title="@lang('ui.empty.chart_sentiment.title')"
+                            description="@lang('ui.empty.chart_sentiment.description')"
+                        />
                     </div>
                 @endif
             </div>
@@ -192,7 +205,7 @@
         </div>
     @endif
 
-    <div class="saas-card overflow-hidden p-0">
+    <div class="saas-card overflow-hidden p-0" data-tour="calls-list">
         <div class="flex flex-wrap items-center justify-between gap-3 border-b border-zinc-200/80 px-6 py-4 dark:border-zinc-800">
             <div>
                 <h2 class="text-lg font-semibold">لیست تماس‌های تحلیل‌شده</h2>
@@ -217,18 +230,18 @@
                 <div class="p-8">
                     @if ($filter->hasUserFilters())
                         <x-saas.empty-state
-                            title="نتیجه‌ای یافت نشد"
-                            description="با فیلترهای فعلی هیچ تماسی پیدا نشد. فیلترها را تغییر دهید یا پاک کنید."
+                            title="@lang('ui.empty.no_results_filter.title')"
+                            description="@lang('ui.empty.no_results_filter.description')"
                         >
-                            <button type="button" wire:click="clearFilters" class="saas-btn-primary mt-4">پاک کردن فیلترها</button>
+                            <button type="button" wire:click="clearFilters" class="saas-btn-primary mt-4">@lang('ui.cta.clear_filters')</button>
                         </x-saas.empty-state>
                     @else
                         <x-saas.empty-state
-                            title="هنوز تماس تحلیل‌شده‌ای ندارید"
-                            description="پس از ثبت و تحلیل تماس‌ها، لیست مکالمات شما اینجا نمایش داده می‌شود."
+                            title="@lang('ui.empty.no_calls.title')"
+                            description="@lang('ui.empty.no_calls.description')"
                         >
                             <div class="mt-6 flex flex-wrap justify-center gap-2">
-                                <a href="{{ route('employee.uploads') }}" class="saas-btn-primary text-sm">آپلود تماس</a>
+                                <a href="{{ route('employee.uploads') }}" class="saas-btn-primary text-sm">@lang('ui.cta.upload_first_call')</a>
                                 <a href="{{ route('employee.performance') }}" class="saas-btn-secondary text-sm">عملکرد من</a>
                             </div>
                         </x-saas.empty-state>
@@ -262,7 +275,7 @@
                                 </button>
                             </div>
                             <div>جهت</div>
-                            <div>لید</div>
+                            <div>سرنخ</div>
                             <div class="text-end">
                                 <button type="button" wire:click="sortByColumn('score')" class="inline-flex items-center gap-1 transition hover:text-zinc-900 dark:hover:text-white">
                                     امتیاز <span class="text-[10px] text-zinc-400">{{ $sortIcon('score') }}</span>

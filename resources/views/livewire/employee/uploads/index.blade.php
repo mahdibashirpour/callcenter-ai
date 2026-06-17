@@ -5,28 +5,28 @@
 
     <x-saas.filter-loading-overlay :target="$filterLoadingTargets" />
 
-    <div class="flex flex-wrap items-center justify-between gap-4">
+    <div class="flex flex-wrap items-center justify-between gap-4" data-tour="upload-header">
         <div>
-            <p class="text-sm font-medium uppercase tracking-wider text-indigo-600 dark:text-indigo-400">آپلود تماس</p>
+            <p class="text-sm font-medium uppercase tracking-wider text-indigo-600 dark:text-indigo-400">بارگذاری تماس</p>
             <h1 class="text-3xl font-semibold tracking-tight">تحلیل هوشمند مکالمات</h1>
-            <p class="mt-2 max-w-2xl text-zinc-500">فایل صوتی تماس را آپلود کنید — هوش مصنوعی در چند دقیقه گفتار، کیفیت و عملکرد را تحلیل می‌کند.</p>
+            <p class="mt-2 max-w-2xl text-zinc-500">تماس را بارگذاری کنید — هوش مصنوعی در چند دقیقه گفتار، کیفیت و عملکرد را تحلیل می‌کند.</p>
         </div>
-        <a href="{{ route('employee.processing-queue.index') }}" class="saas-btn-secondary shrink-0">صف پردازش</a>
+        <a href="{{ route('employee.processing-queue.index') }}" class="saas-btn-secondary shrink-0">@lang('ui.cta.view_queue')</a>
     </div>
 
     @if (($wallet['balance'] ?? 0) < (($wallet['currency'] ?? 'IRR') === 'IRR' ? 1000 : 0.01))
         <div class="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800 dark:border-red-900 dark:bg-red-950 dark:text-red-200">
-            موجودی کیف پول هوش مصنوعی کافی نیست ({{ \App\Models\PlatformAiSettings::formatMoney($wallet['balance'] ?? 0) }}).
-            تا زمانی که سازمان کیف پول را شارژ نکند، آپلودها با خطا مواجه می‌شوند.
+            موجودی اعتبار تحلیل کافی نیست ({{ \App\Models\PlatformAiSettings::formatMoney($wallet['balance'] ?? 0) }}).
+            تا زمانی که سازمان اعتبار را شارژ نکند، بارگذاری تماس با خطا مواجه می‌شود.
         </div>
     @elseif (($wallet['balance'] ?? 0) < (($wallet['currency'] ?? 'IRR') === 'IRR' ? 100_000 : 10))
         <div class="rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900 dark:border-amber-900/50 dark:bg-amber-950/40 dark:text-amber-100">
-            موجودی کیف پول کم است ({{ \App\Models\PlatformAiSettings::formatMoney($wallet['balance']) }}). قبل از حجم بالای تحلیل، شارژ کیف پول سازمان را در نظر بگیرید.
+            موجودی اعتبار کم است ({{ \App\Models\PlatformAiSettings::formatMoney($wallet['balance']) }}). قبل از بارگذاری حجم بالای تماس، شارژ اعتبار سازمان را در نظر بگیرید.
         </div>
     @endif
 
     <div class="grid gap-6 lg:grid-cols-2 lg:items-start">
-        <div class="saas-card border-indigo-200/50 shadow-md shadow-indigo-500/5 dark:border-indigo-500/20">
+        <div class="saas-card border-indigo-200/50 shadow-md shadow-indigo-500/5 dark:border-indigo-500/20" data-tour="upload-zone">
             <x-saas.manual-upload-panel
                 :upload-zone-state="$uploadZoneState"
                 :selected-file-name="$selectedFileName"
@@ -35,17 +35,19 @@
             />
         </div>
 
+        <div data-tour="upload-samples">
         <x-saas.sample-conversations
             :samples="$sampleConversations"
             :highlighted-id="$highlightedSampleId"
         />
+        </div>
     </div>
 
-    <div class="space-y-4">
+    <div class="space-y-4" data-tour="upload-history">
         <div class="flex flex-wrap items-end justify-between gap-4">
             <div>
-                <h2 class="text-xl font-semibold">آپلودهای اخیر من</h2>
-                <p class="mt-1 text-sm text-zinc-500">تاریخچه تحلیل‌های دستی شما</p>
+                <h2 class="text-xl font-semibold">تماس‌های بارگذاری‌شده اخیر</h2>
+                <p class="mt-1 text-sm text-zinc-500">تاریخچه تماس‌ها و وضعیت تحلیل آن‌ها</p>
             </div>
         </div>
 
@@ -96,7 +98,10 @@
                     @endif
                 </a>
             @empty
-                <x-saas.empty-state title="آپلود دستی وجود ندارد" description="اولین تماس خود را در بالا آپلود کنید تا تحلیل آغاز شود." />
+                <x-saas.empty-state
+                    title="@lang('ui.empty.no_uploads.title')"
+                    description="@lang('ui.empty.no_uploads.description')"
+                />
             @endforelse
         </div>
 

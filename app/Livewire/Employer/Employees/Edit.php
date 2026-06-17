@@ -88,11 +88,11 @@ class Edit extends Component
         OrganizationActivityLogger::log(
             organizationId: $this->employee->organization_id,
             type: 'employee_updated',
-            title: 'کارشناس به‌روزرسانی شد',
-            description: "پروفایل {$data['first_name']} {$data['last_name']} به‌روزرسانی شد.",
+            title: 'اطلاعات کارشناس به‌روز شد',
+            description: "پروفایل {$data['first_name']} {$data['last_name']} ذخیره شد.",
         );
 
-        session()->flash('status', 'کارشناس به‌روزرسانی شد.');
+        session()->flash('status', __('ui.success.employee_saved'));
 
         $this->redirect(route('employer.employees.index'), navigate: true);
     }

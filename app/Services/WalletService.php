@@ -38,7 +38,7 @@ class WalletService
     {
         if (! $this->hasSufficientBalance($organizationId, $minimumAmount)) {
             throw new InsufficientWalletBalanceException(
-                'موجودی کیف پول کافی نیست. لطفاً اعتبار هوش مصنوعی خود را شارژ کنید.',
+                'موجودی اعتبار تحلیل کافی نیست. برای ادامه، موجودی خود را شارژ کنید.',
             );
         }
     }
@@ -111,7 +111,7 @@ class WalletService
             $balanceAfter = round($balanceBefore + $amount, 6);
 
             if ($balanceAfter < 0 && ! PlatformAiSettings::current()->allow_negative_balance) {
-                throw new InsufficientWalletBalanceException('موجودی کیف پول برای این تراکنش کافی نیست.');
+                throw new InsufficientWalletBalanceException(__('ui.wallet.insufficient_transaction'));
             }
 
             $wallet->update(['balance' => $balanceAfter]);

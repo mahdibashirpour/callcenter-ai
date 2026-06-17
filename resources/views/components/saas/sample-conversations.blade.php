@@ -7,7 +7,7 @@
     <div class="mb-3">
         <h2 class="text-lg font-semibold">مکالمات نمونه</h2>
         <p class="mt-1 text-sm text-zinc-500">
-            فایل صوتی نمونه مستقیماً به هوش مصنوعی ارسال می‌شود و نتیجه واقعی تحلیل نمایش داده می‌شود.
+            برای آشنایی با تحلیل هوش مصنوعی، یکی از نمونه‌های آماده را انتخاب کنید — نتیجه واقعی همان تماس نمایش داده می‌شود.
         </p>
     </div>
 
@@ -27,7 +27,7 @@
                         <span class="saas-badge shrink-0 text-[10px]">{{ $sample['category'] }}</span>
                     </div>
                     @unless ($sample['available'])
-                        <p class="mt-0.5 truncate text-[11px] text-amber-600 dark:text-amber-400">فایل صوتی هنوز قرار نگرفته</p>
+                        <p class="mt-0.5 truncate text-[11px] text-amber-600 dark:text-amber-400">فایل صوتی هنوز آماده نشده</p>
                     @endunless
                 </div>
 
@@ -42,7 +42,7 @@
                     ])
                     @disabled(! $sample['available'])
                 >
-                    <span wire:loading.remove wire:target="submitSampleForAnalysis">تحلیل</span>
+                    <span wire:loading.remove wire:target="submitSampleForAnalysis">تحلیل این نمونه</span>
                     <span wire:loading wire:target="submitSampleForAnalysis">…</span>
                 </button>
             </div>

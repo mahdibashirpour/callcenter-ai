@@ -10,7 +10,7 @@ class UserFacingError
             return $technicalMessage;
         }
 
-        return 'خطا در پردازش فایل. لطفاً دوباره تلاش کنید یا با پشتیبانی تماس بگیرید.';
+        return __('ui.processing.error');
     }
 
     public static function upload(?string $technicalMessage = null): string
@@ -19,6 +19,6 @@ class UserFacingError
             return $technicalMessage;
         }
 
-        return 'خطا در پردازش فایل.';
+        return __('ui.processing.upload_error');
     }
 }

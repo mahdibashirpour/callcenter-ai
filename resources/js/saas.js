@@ -4,6 +4,7 @@ import './waveform-player';
 import { initJalaliDateInputs } from './jalali-date-input';
 import { initReportCharts } from './reports-charts';
 import { initEmployerOnboarding } from './employer-onboarding';
+import { initEmployeeOnboarding } from './employee-onboarding';
 
 function navigateTo(href) {
     if (! href) {
@@ -149,6 +150,8 @@ if (document.readyState === 'loading') {
 
 if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', initEmployerOnboarding);
+    document.addEventListener('DOMContentLoaded', initEmployeeOnboarding);
 } else {
     initEmployerOnboarding();
+    initEmployeeOnboarding();
 }

@@ -14,12 +14,12 @@ enum ProcessingJobStage: string
     public function label(): string
     {
         return match ($this) {
-            self::Uploaded => 'آپلود شد',
-            self::Queued => 'در صف',
+            self::Uploaded => 'بارگذاری شد',
+            self::Queued => 'در صف تحلیل',
             self::SendingToAi => 'ارسال به هوش مصنوعی',
             self::WaitingForAi => 'در انتظار پاسخ هوش مصنوعی',
-            self::ProcessingResult => 'پردازش نتیجه',
-            self::Completed => 'تکمیل شد',
+            self::ProcessingResult => 'آماده‌سازی نتیجه',
+            self::Completed => 'تحلیل شد',
         };
     }
 

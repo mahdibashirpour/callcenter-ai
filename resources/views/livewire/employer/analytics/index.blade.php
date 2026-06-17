@@ -1,10 +1,10 @@
 <div class="space-y-8">
-    <h1 class="text-3xl font-semibold tracking-tight">تحلیل‌ها</h1>
+    <h1 class="text-3xl font-semibold tracking-tight">تحلیل‌های تیم</h1>
     <div class="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         <x-saas.stat-card label="میانگین امتیاز تیم" :value="$overview['average_score']" />
         <x-saas.stat-card label="کل توکن‌ها" :value="number_format($overview['total_tokens'])" />
-        <x-saas.stat-card label="هزینه AI" :value="\App\Models\PlatformAiSettings::formatMoney($overview['total_cost'])" />
-        <x-saas.stat-card label="گفتگوها" :value="$overview['total_analyzed']" />
+        <x-saas.stat-card label="هزینه تحلیل" :value="\App\Models\PlatformAiSettings::formatMoney($overview['total_cost'])" />
+        <x-saas.stat-card label="تماس‌های تحلیل‌شده" :value="$overview['total_analyzed']" />
     </div>
     <div class="grid gap-6 lg:grid-cols-2">
         <div class="saas-card">

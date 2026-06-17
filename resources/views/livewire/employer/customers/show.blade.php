@@ -157,7 +157,7 @@
                 </div>
             @else
                 <div class="mt-4">
-                    <x-saas.empty-state title="هنوز داده روندی وجود ندارد" description="پس از تحلیل تماس‌ها، نمودار امتیاز اینجا نمایش داده می‌شود." />
+                    <x-saas.empty-state title="@lang('ui.empty.chart_trend.title')" description="@lang('ui.empty.chart_trend.description')" />
                 </div>
             @endif
         </div>
@@ -171,7 +171,7 @@
                 </div>
             @else
                 <div class="mt-4">
-                    <x-saas.empty-state title="داده احساسات وجود ندارد" description="احساسات مشتری پس از تحلیل تماس‌ها ثبت می‌شود." />
+                    <x-saas.empty-state title="@lang('ui.empty.chart_sentiment.title')" description="@lang('ui.empty.chart_sentiment.description')" />
                 </div>
             @endif
         </div>
@@ -311,7 +311,7 @@
                     @endif
                 </div>
             @empty
-                <x-saas.empty-state title="تماسی ثبت نشده" description="تماس‌های این مشتری پس از تحلیل اینجا نمایش داده می‌شوند." />
+                <x-saas.empty-state title="@lang('ui.empty.no_calls.title')" description="تماس‌های این مشتری پس از تحلیل، اینجا نمایش داده می‌شوند." />
             @endforelse
         </div>
     </div>

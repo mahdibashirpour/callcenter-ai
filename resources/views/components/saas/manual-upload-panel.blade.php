@@ -20,7 +20,7 @@
             wire:click="$toggle('showMetadata')"
             class="flex w-full items-center justify-between px-4 py-3 text-sm font-medium text-zinc-700 transition hover:bg-zinc-50 dark:text-zinc-300 dark:hover:bg-zinc-900/50"
         >
-            <span>اطلاعات تکمیلی (اختیاری)</span>
+            <span>جزئیات تماس (اختیاری)</span>
             <svg @class(['h-4 w-4 text-zinc-400 transition', 'rotate-180' => $showMetadata]) viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
             </svg>
@@ -65,7 +65,7 @@
                 </div>
                 <div class="sm:col-span-2">
                     <label class="text-sm font-medium text-zinc-700 dark:text-zinc-300">یادداشت‌ها</label>
-                    <textarea wire:model="notes" rows="3" class="saas-input mt-1 text-sm" placeholder="هر نکته‌ای که به تحلیل کمک می‌کند…"></textarea>
+                    <textarea wire:model="notes" rows="3" class="saas-input mt-1 text-sm" placeholder="مثلاً موضوع تماس، نگرانی مشتری یا نکته‌ای که به تحلیل کمک می‌کند…"></textarea>
                 </div>
             </div>
         @endif
@@ -83,7 +83,7 @@
         ])
         @if (! $selectedFileName) disabled @endif
     >
-        <span wire:loading.remove wire:target="submitForAnalysis">شروع تحلیل هوش مصنوعی</span>
+        <span wire:loading.remove wire:target="submitForAnalysis">{{ __('ui.cta.start_analysis') }}</span>
         <span wire:loading wire:target="submitForAnalysis">در حال ارسال…</span>
     </button>
 </div>

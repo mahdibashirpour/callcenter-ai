@@ -8,7 +8,7 @@
     <div class="flex flex-wrap items-center justify-between gap-4" data-tour="queue-header">
         <div>
             <h1 class="text-3xl font-semibold tracking-tight">صف پردازش</h1>
-            <p class="mt-2 text-zinc-500">نظارت بر آپلود فایل‌های صوتی و کارهای تحلیل هوش مصنوعی به‌صورت لحظه‌ای.</p>
+            <p class="mt-2 text-zinc-500">پیگیری لحظه‌ای بارگذاری تماس‌ها و وضعیت تحلیل هوش مصنوعی.</p>
         </div>
         <button type="button" wire:click="refreshQueue" class="saas-btn-secondary">بروزرسانی</button>
     </div>
@@ -40,7 +40,7 @@
                         <th>وضعیت</th>
                         <th>مرحله</th>
                         <th>پیشرفت</th>
-                        <th>آپلود</th>
+                        <th>بارگذاری</th>
                         <th>شروع</th>
                         <th>تکمیل</th>
                         <th></th>
@@ -78,7 +78,7 @@
                             </tr>
                         @endif
                     @empty
-                        <tr><td colspan="8" class="py-8 text-center text-zinc-500">هنوز کار پردازشی وجود ندارد.</td></tr>
+                        <tr><td colspan="8" class="py-8 text-center text-zinc-500">هنوز تماسی در صف پردازش نیست — پس از بارگذاری، وضعیت تحلیل اینجا نمایش داده می‌شود.</td></tr>
                     @endforelse
                 </tbody>
             </table>

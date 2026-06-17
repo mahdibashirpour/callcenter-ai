@@ -15,9 +15,9 @@ enum ProcessingJobStatus: string
     {
         return match ($this) {
             self::Queued => 'در صف',
-            self::Uploading => 'در حال آپلود',
-            self::Processing => 'در حال پردازش',
-            self::Completed => 'تکمیل شد',
+            self::Uploading => 'در حال بارگذاری',
+            self::Processing => 'در حال تحلیل',
+            self::Completed => 'تحلیل شد',
             self::Failed => 'ناموفق',
             self::Cancelled => 'لغو شد',
         };

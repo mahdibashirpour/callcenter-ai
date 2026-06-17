@@ -11,12 +11,13 @@
     class="saas-card sticky top-0 z-10 space-y-5 shadow-sm"
     wire:key="employee-call-filters-{{ $datePreset }}-{{ $customFrom }}-{{ $customTo }}"
     x-data="{ showCustom: @js($showCustomDateRange || $datePreset === 'custom'), showMore: @js($showMoreDatePresets) }"
+    data-tour="call-filters"
 >
     <div class="flex flex-wrap items-center justify-between gap-3">
         <h2 class="text-sm font-semibold uppercase tracking-wider text-zinc-500">فیلترها</h2>
         @if ($filter->hasUserFilters())
             <button type="button" wire:click="clearFilters" class="text-sm font-medium text-indigo-600 hover:text-indigo-800 dark:text-indigo-400">
-                پاک کردن فیلترها
+                @lang('ui.cta.clear_filters')
             </button>
         @endif
     </div>

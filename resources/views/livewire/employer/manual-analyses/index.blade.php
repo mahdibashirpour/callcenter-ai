@@ -7,20 +7,20 @@
 
     <div class="flex flex-wrap items-center justify-between gap-4" data-tour="manual-upload-header">
         <div>
-            <p class="text-sm font-medium uppercase tracking-wider text-indigo-600 dark:text-indigo-400">آپلود تماس</p>
+            <p class="text-sm font-medium uppercase tracking-wider text-indigo-600 dark:text-indigo-400">بارگذاری تماس</p>
             <h1 class="text-3xl font-semibold tracking-tight">تحلیل هوشمند مکالمات</h1>
-            <p class="mt-2 max-w-2xl text-zinc-500">فایل صوتی تماس را آپلود کنید — هوش مصنوعی در چند دقیقه گفتار، کیفیت و عملکرد را تحلیل می‌کند.</p>
+            <p class="mt-2 max-w-2xl text-zinc-500">فایل صوتی تماس را بارگذاری کنید — هوش مصنوعی در چند دقیقه گفتار، کیفیت و عملکرد را تحلیل می‌کند.</p>
         </div>
-        <a href="{{ route('employer.processing-queue.index') }}" class="saas-btn-secondary shrink-0">صف پردازش</a>
+        <a href="{{ route('employer.processing-queue.index') }}" class="saas-btn-secondary shrink-0">@lang('ui.cta.view_queue')</a>
     </div>
 
     @if (($wallet['balance'] ?? 0) < (($wallet['currency'] ?? 'IRR') === 'IRR' ? 1000 : 0.01))
         <div class="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800 dark:border-red-900 dark:bg-red-950 dark:text-red-200">
-            موجودی کیف پول هوش مصنوعی کافی نیست. لطفاً قبل از آپلود فایل صوتی جدید، <a href="{{ route('employer.wallet.index') }}" class="font-medium underline">کیف پول خود را شارژ کنید</a>.
+            @lang('ui.wallet.insufficient') <a href="{{ route('employer.wallet.index') }}" class="font-medium underline">شارژ اعتبار تحلیل</a>
         </div>
     @elseif (($wallet['balance'] ?? 0) < (($wallet['currency'] ?? 'IRR') === 'IRR' ? 100_000 : 10))
         <div class="rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900 dark:border-amber-900/50 dark:bg-amber-950/40 dark:text-amber-100">
-            موجودی کیف پول کم است ({{ \App\Models\PlatformAiSettings::formatMoney($wallet['balance']) }}). قبل از حجم بالای تحلیل، شارژ کیف پول را در نظر بگیرید.
+            اعتبار تحلیل کم است ({{ \App\Models\PlatformAiSettings::formatMoney($wallet['balance']) }}). قبل از بارگذاری تماس‌های بیشتر، موجودی را شارژ کنید.
         </div>
     @endif
 
@@ -47,8 +47,8 @@
     <div class="space-y-4" data-tour="manual-history">
         <div class="flex flex-wrap items-end justify-between gap-4">
             <div>
-                <h2 class="text-xl font-semibold">آپلودهای اخیر</h2>
-                <p class="mt-1 text-sm text-zinc-500">تاریخچه تحلیل‌های دستی تیم شما</p>
+                <h2 class="text-xl font-semibold">بارگذاری‌های اخیر</h2>
+                <p class="mt-1 text-sm text-zinc-500">تاریخچه تحلیل تماس‌های بارگذاری‌شده توسط تیم</p>
             </div>
         </div>
 
@@ -105,7 +105,10 @@
                     @endif
                 </a>
             @empty
-                <x-saas.empty-state title="آپلود دستی وجود ندارد" description="اولین تماس خود را در بالا آپلود کنید تا تحلیل آغاز شود." />
+                <x-saas.empty-state
+                    title="@lang('ui.empty.no_uploads.title')"
+                    description="@lang('ui.empty.no_uploads.description')"
+                />
             @endforelse
         </div>
 

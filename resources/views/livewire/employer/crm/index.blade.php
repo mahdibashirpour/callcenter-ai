@@ -1,19 +1,19 @@
 <div class="space-y-8">
     <div data-tour="crm-header">
         <h1 class="text-3xl font-semibold tracking-tight">یکپارچه‌سازی CRM</h1>
-        <p class="mt-2 text-zinc-500">CRM خود را متصل کنید تا شناسه تماس‌گیرنده شناسایی شود و هوش مشتری در تماس‌های ورودی غنی‌تر گردد.</p>
+        <p class="mt-2 text-zinc-500">CRM خود را متصل کنید تا شناسه تماس‌گیرنده شناسایی شود و پروفایل مشتری در تحلیل تماس‌های ورودی غنی‌تر شود.</p>
     </div>
 
     @unless ($isComplete)
         @include('livewire.shared.integration-setup-pending', [
-            'title' => 'سیستم در حال راه‌اندازی است',
-            'description' => 'تنظیمات CRM هنوز کامل نشده‌اند. پس از اتصال و تأیید سرویس، جزئیات اتصال اینجا نمایش داده می‌شود.',
+            'title' => 'اتصال CRM در حال راه‌اندازی است',
+            'description' => 'تنظیمات یکپارچه‌سازی هنوز کامل نشده. پس از اتصال و تأیید سرویس، جزئیات اتصال و وضعیت همگام‌سازی اینجا نمایش داده می‌شود.',
         ])
     @else
         <div class="rounded-lg border border-indigo-200 bg-indigo-50 px-4 py-3 text-sm text-indigo-900 dark:border-indigo-900/50 dark:bg-indigo-950/40 dark:text-indigo-100">
             <p class="font-medium">راهنمای اتصال CRM</p>
             <p class="mt-1 text-indigo-800/90 dark:text-indigo-200/90">
-                با اتصال CRM، تماس‌های ورودی می‌توانند شماره تماس‌گیرنده را با نام مخاطب، تاریخچه و اقدامات پیگیری پیشنهادی مطابقت دهند.
+                با اتصال CRM، تماس‌های ورودی با نام مخاطب، تاریخچه و اقدامات پیگیری پیشنهادی مطابقت داده می‌شوند — و تحلیل هر تماس با زمینه مشتری دقیق‌تر می‌شود.
             </p>
         </div>
 

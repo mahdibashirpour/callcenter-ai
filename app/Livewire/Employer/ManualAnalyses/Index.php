@@ -116,7 +116,7 @@ class Index extends Component
         } catch (ValidationException $e) {
             $message = $e->validator->errors()->first('audio')
                 ?: $e->validator->errors()->first()
-                ?: 'اعتبارسنجی ناموفق بود. لطفاً فرم را بررسی و دوباره تلاش کنید.';
+                ?: __('ui.upload.validation_failed');
 
             $this->addError('audio', $message);
             $this->dispatchUploadErrorToast($message);
@@ -155,7 +155,7 @@ class Index extends Component
             );
         } catch (InsufficientWalletBalanceException|ValidationException $e) {
             $message = $e instanceof ValidationException
-                ? ($e->validator->errors()->first('audio') ?: $e->validator->errors()->first() ?: 'آپلود فایل صوتی ناموفق بود.')
+                ? ($e->validator->errors()->first('audio') ?: $e->validator->errors()->first() ?: __('ui.upload.error_default'))
                 : $e->getMessage();
 
             $this->addError('audio', $message);
@@ -185,7 +185,7 @@ class Index extends Component
         $sample = SampleConversations::find($sampleId);
 
         if ($sample === null || ! ($sample['available'] ?? false)) {
-            $message = 'فایل این مکالمه نمونه هنوز در دسترس نیست.';
+            $message = 'فایل مکالمه نمونه در دسترس نیست. لطفاً کمی بعد دوباره تلاش کنید.';
             $this->addError('audio', $message);
             $this->dispatchUploadErrorToast($message);
 
@@ -235,7 +235,7 @@ class Index extends Component
             );
         } catch (InsufficientWalletBalanceException|ValidationException $e) {
             $message = $e instanceof ValidationException
-                ? ($e->validator->errors()->first('audio') ?: $e->validator->errors()->first() ?: 'شروع تحلیل نمونه ناموفق بود.')
+                ? ($e->validator->errors()->first('audio') ?: $e->validator->errors()->first() ?: __('ui.upload.sample_failed'))
                 : $e->getMessage();
 
             $this->addError('audio', $message);

@@ -2,7 +2,7 @@
     <x-saas.page-header
         data-tour="page-header"
         title="مشتریان"
-        description="پایگاه هوش مشتری — ساخته‌شده خودکار از تحلیل تماس‌ها."
+        description="پایگاه مشتری — ساخته‌شده خودکار از تحلیل تماس‌ها."
     />
 
     <div class="saas-card" data-tour="customers-search">
@@ -18,7 +18,7 @@
             />
         @empty
             <div class="col-span-full">
-                <x-saas.empty-state title="هنوز مشتری ثبت نشده" description="پس از تحلیل تماس‌ها، مشتریان به‌صورت خودکار اینجا نمایش داده می‌شوند." />
+                <x-saas.empty-state title="@lang('ui.empty.no_customers.title')" description="@lang('ui.empty.no_customers.description')" />
             </div>
         @endforelse
     </div>

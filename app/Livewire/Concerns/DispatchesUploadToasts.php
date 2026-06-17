@@ -28,13 +28,16 @@ trait DispatchesUploadToasts
     {
         $this->dispatchUploadToast(
             type: 'success',
-            message: 'فایل صوتی با موفقیت آپلود شد و به صف پردازش اضافه شد.',
+            message: __('ui.upload.success'),
             url: $url,
         );
     }
 
-    protected function dispatchUploadErrorToast(string $message = 'آپلود فایل صوتی ناموفق بود. لطفاً دوباره تلاش کنید.'): void
+    protected function dispatchUploadErrorToast(?string $message = null): void
     {
-        $this->dispatchUploadToast(type: 'error', message: $message);
+        $this->dispatchUploadToast(
+            type: 'error',
+            message: $message ?? __('ui.upload.error_default'),
+        );
     }
 }

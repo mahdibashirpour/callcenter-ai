@@ -1,6 +1,7 @@
 <div
     class="saas-card sticky top-0 z-10 shadow-sm"
     wire:key="coaching-period-{{ $period }}"
+    data-tour="coaching-filters"
 >
     <div class="flex flex-wrap items-center justify-between gap-3">
         <div>

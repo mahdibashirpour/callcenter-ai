@@ -14,7 +14,7 @@
                 'stack' => 'activity',
             ],
             [
-                'label' => 'آپلودها',
+                'label' => 'بارگذاری‌ها',
                 'data' => collect($volumeTrend)->pluck('uploads')->all(),
                 'backgroundColor' => 'rgba(14, 165, 233, 0.75)',
                 'borderRadius' => 5,
@@ -39,8 +39,9 @@
 
     <x-saas.page-header
         title="فعالیت اخیر"
-        description="خلاصه فعالیت، تحلیل‌ها، بازخوردها و پیگیری‌های شما در این بازه."
+        description="روندی از تماس‌ها، تحلیل‌ها و پیگیری‌های شما — برای دیدن جزئیات هر بازه را انتخاب کنید."
         eyebrow="کارشناس"
+        data-tour="page-header"
     >
         <x-slot:actions>
             <a href="{{ route('employee.calls') }}" class="saas-btn-secondary text-sm">تماس‌های من</a>
@@ -49,18 +50,18 @@
     </x-saas.page-header>
 
     {{-- Hero --}}
-    <section class="saas-hero saas-hero--accent">
+    <section class="saas-hero saas-hero--accent" data-tour="activity-hero">
         <div class="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
             <div class="flex items-start gap-5">
                 <x-saas.avatar :employee="$membership" size="xl" ring />
                 <div>
                     <p class="text-xs font-semibold uppercase tracking-wider text-indigo-600 dark:text-indigo-400">فعالیت اخیر</p>
-                    <h2 class="text-2xl font-bold tracking-tight">{{ $membership->first_name }}، اینجا چه خبره؟</h2>
+                    <h2 class="text-2xl font-bold tracking-tight">خلاصه فعالیت {{ $membership->first_name }}</h2>
                     <p class="mt-2 text-sm text-zinc-600 dark:text-zinc-300">
                         در این بازه
                         <span class="font-semibold text-zinc-900 dark:text-white">{{ $summary['total_events'] }}</span>
-                        رویداد ثبت شده؛
-                        {{ $summary['analyzed_count'] }} تحلیل و {{ $summary['upload_count'] }} آپلود.
+                        رویداد؛
+                        {{ $summary['analyzed_count'] }} تحلیل و {{ $summary['upload_count'] }} بارگذاری.
                     </p>
                     @if ($summary['last_activity'])
                         <p class="mt-1 text-xs text-zinc-500">آخرین فعالیت: {{ $summary['last_activity'] }}</p>
@@ -82,7 +83,7 @@
     ])
 
     {{-- KPI row --}}
-    <div class="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+    <div class="grid gap-4 sm:grid-cols-2 xl:grid-cols-4" data-tour="activity-stats">
         <x-saas.stat-card
             label="تحلیل‌های دریافت‌شده"
             :value="$summary['analyzed_count']"
@@ -90,12 +91,12 @@
             :trend="$summary['analyzed_delta']"
         />
         <x-saas.stat-card
-            label="آپلودهای انجام‌شده"
+            label="تماس‌های بارگذاری‌شده"
             :value="$summary['upload_count']"
             hint="در بازه انتخاب‌شده"
         />
         <x-saas.stat-card
-            label="بازخوردهای AI"
+            label="بازخوردهای هوش مصنوعی"
             :value="$summary['feedback_count']"
             hint="مکالمه با نظر جامع"
         />
@@ -107,27 +108,30 @@
     </div>
 
     {{-- Volume chart --}}
-    <div class="saas-card">
+    <div class="saas-card" data-tour="activity-chart">
         <h2 class="text-lg font-semibold">حجم فعالیت روزانه</h2>
-        <p class="mt-1 text-sm text-zinc-500">تعداد تحلیل‌ها و آپلودها به تفکیک روز</p>
+        <p class="mt-1 text-sm text-zinc-500">تعداد تحلیل‌ها و بارگذاری‌ها به تفکیک روز</p>
         @if ($hasVolumeTrend)
             <div class="mt-4 h-52" wire:ignore>
                 <canvas id="activity-volume-chart" data-report-chart data-type="bar" data-config='@json($volumeChart)'></canvas>
             </div>
         @else
             <div class="mt-4">
-                <x-saas.empty-state title="داده فعالیتی وجود ندارد" description="پس از ثبت تماس در این بازه، نمودار پر می‌شود." />
+                <x-saas.empty-state
+                    title="@lang('ui.empty.chart_volume.title')"
+                    description="@lang('ui.empty.chart_volume.description')"
+                />
             </div>
         @endif
     </div>
 
     {{-- Type filter + search --}}
-    <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+    <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between" data-tour="activity-timeline">
         <div class="flex flex-wrap gap-2">
             @foreach ([
                 'all' => 'همه رویدادها',
                 'analysis' => 'تحلیل‌ها',
-                'upload' => 'آپلودها',
+                'upload' => 'بارگذاری‌ها',
                 'feedback' => 'بازخوردها',
             ] as $value => $label)
                 <button
@@ -159,7 +163,10 @@
     <section>
         @if (count($timeline) === 0)
             <div class="saas-card">
-                <x-saas.empty-state title="رویدادی یافت نشد" description="در این بازه با این فیلتر رویدادی ثبت نشده است." />
+                <x-saas.empty-state
+                    title="@lang('ui.empty.no_results_filter.title')"
+                    description="@lang('ui.empty.no_results_filter.description')"
+                />
             </div>
         @else
             <div class="relative">
@@ -186,7 +193,7 @@
                                     'dot' => 'bg-sky-500',
                                     'icon' => 'upload',
                                     'badge' => 'bg-sky-100 text-sky-700 dark:bg-sky-950/50 dark:text-sky-300',
-                                    'label' => 'آپلود',
+                                    'label' => 'بارگذاری',
                                 ],
                                 default => [
                                     'dot' => 'bg-zinc-400',
@@ -268,7 +275,10 @@
                         <p class="mt-1 text-sm text-zinc-500 line-clamp-2">{{ $item['feedback'] }}</p>
                     </a>
                 @empty
-                    <x-saas.empty-state title="بازخوردی موجود نیست" description="پس از تحلیل تماس‌ها، ارزیابی‌های جامع اینجا ظاهر می‌شوند." />
+                    <x-saas.empty-state
+                        title="هنوز بازخوردی دریافت نکرده‌اید"
+                        description="پس از تحلیل تماس‌ها، ارزیابی‌های هوش مصنوعی اینجا نمایش داده می‌شود."
+                    />
                 @endforelse
             </div>
         </div>
@@ -287,7 +297,10 @@
                         <a href="{{ route('employee.calls.show', $item['analysis_id']) }}" class="shrink-0 text-xs text-indigo-600 hover:underline dark:text-indigo-400">مشاهده</a>
                     </li>
                 @empty
-                    <x-saas.empty-state title="پیگیری‌ای وجود ندارد" description="پس از تحلیل تماس‌ها، هوش مصنوعی اقدامات را پیشنهاد می‌دهد." />
+                    <x-saas.empty-state
+                        title="@lang('ui.empty.no_followups.title')"
+                        description="@lang('ui.empty.no_followups.description')"
+                    />
                 @endforelse
             </ul>
         </div>

@@ -142,7 +142,7 @@
                 </div>
             @else
                 <div class="mt-4">
-                    <x-saas.empty-state title="داده روندی وجود ندارد" description="با تحلیل تماس‌های بیشتر، نمودار کیفیت اینجا نمایش داده می‌شود." />
+                    <x-saas.empty-state title="@lang('ui.empty.chart_trend.title')" description="@lang('ui.empty.chart_trend.description')" />
                 </div>
             @endif
         </div>
@@ -156,7 +156,7 @@
                 </div>
             @else
                 <div class="mt-4">
-                    <x-saas.empty-state title="داده حجمی وجود ندارد" description="پس از تحلیل تماس‌ها، نمودار حجم فعالیت پر می‌شود." />
+                    <x-saas.empty-state title="@lang('ui.empty.chart_volume.title')" description="@lang('ui.empty.chart_volume.description')" />
                 </div>
             @endif
         </div>
@@ -170,7 +170,7 @@
                 </div>
             @else
                 <div class="mt-4">
-                    <x-saas.empty-state title="داده لید وجود ندارد" description="اطلاعات لید پس از تحلیل تماس‌ها ثبت می‌شود." />
+                    <x-saas.empty-state title="@lang('ui.empty.chart_lead.title')" description="@lang('ui.empty.chart_lead.description')" />
                 </div>
             @endif
         </div>
@@ -184,7 +184,7 @@
                 </div>
             @else
                 <div class="mt-4">
-                    <x-saas.empty-state title="داده احساسات وجود ندارد" description="احساسات مشتری پس از تحلیل تماس‌ها نمایش داده می‌شود." />
+                    <x-saas.empty-state title="@lang('ui.empty.chart_sentiment.title')" description="@lang('ui.empty.chart_sentiment.description')" />
                 </div>
             @endif
         </div>
@@ -225,15 +225,15 @@
                 <div class="p-8">
                     @if ($filter->hasActiveFilters())
                         <x-saas.empty-state
-                            title="نتیجه‌ای یافت نشد"
-                            description="با فیلترهای فعلی هیچ تحلیلی پیدا نشد. فیلترها را تغییر دهید یا پاک کنید."
+                            title="@lang('ui.empty.no_results_filter.title')"
+                            description="@lang('ui.empty.no_results_filter.description')"
                         >
-                            <button type="button" wire:click="clearFilters" class="saas-btn-primary mt-4">پاک کردن فیلترها</button>
+                            <button type="button" wire:click="clearFilters" class="saas-btn-primary mt-4">@lang('ui.cta.clear_filters')</button>
                         </x-saas.empty-state>
                     @else
                         <x-saas.empty-state
-                            title="هنوز تحلیلی وجود ندارد"
-                            description="تحلیل‌های گفتگو پس از پردازش تماس‌ها اینجا نمایش داده می‌شوند."
+                            title="@lang('ui.empty.no_analyses.title')"
+                            description="@lang('ui.empty.no_analyses.description')"
                         />
                     @endif
                 </div>

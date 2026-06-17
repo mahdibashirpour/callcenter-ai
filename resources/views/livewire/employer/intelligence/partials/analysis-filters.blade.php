@@ -17,7 +17,7 @@
         <h2 class="text-sm font-semibold uppercase tracking-wider text-zinc-500">فیلترها</h2>
         @if ($filter->hasActiveFilters())
             <button type="button" wire:click="clearFilters" class="text-sm font-medium text-indigo-600 hover:text-indigo-800 dark:text-indigo-400">
-                پاک کردن همه فیلترها
+                @lang('ui.cta.clear_filters')
             </button>
         @endif
     </div>

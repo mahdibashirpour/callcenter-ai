@@ -19,6 +19,17 @@
             };
         </script>
     @endif
+    @if (($portal ?? '') === 'employee')
+        @php
+            $employeeOnboardingRoutes = \App\Support\Onboarding\EmployeeOnboarding::routeUrls();
+        @endphp
+        <script>
+            window.__employeeOnboarding = {
+                currentRoute: @json(\Illuminate\Support\Facades\Route::currentRouteName()),
+                routes: @json($employeeOnboardingRoutes),
+            };
+        </script>
+    @endif
     @vite(['resources/css/saas.css', 'resources/js/saas.js'])
     @livewireStyles
     <script>
@@ -49,8 +60,8 @@
         @include('components.saas.toast-stack')
     @endauth
 
-    @if (($portal ?? '') === 'employer')
-        <x-saas.onboarding-tour portal="employer" />
+    @if (in_array($portal ?? '', ['employer', 'employee'], true))
+        <x-saas.onboarding-tour :portal="$portal" />
     @endif
 
     @livewireScripts

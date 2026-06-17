@@ -57,7 +57,7 @@ class Edit extends Component
             return;
         }
 
-        session()->flash('status', 'اطلاعات مشتری به‌روزرسانی شد.');
+        session()->flash('status', __('ui.success.customer_saved'));
 
         $this->redirect(route('employer.customers.show', $this->customer), navigate: true);
     }

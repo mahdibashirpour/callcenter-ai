@@ -53,7 +53,8 @@
 
     <x-saas.page-header
         title="مربیگری فروش"
-        description="برنامه شخصی‌سازی‌شده برای تقویت نقاط قوت، رفع ضعف‌ها و بهبود نرخ تبدیل فروش."
+        description="برنامه رشد شخصی‌سازی‌شده بر اساس تحلیل تماس‌ها — نقاط قوت، حوزه‌های بهبود و اقدامات عملی."
+        data-tour="page-header"
     >
         <x-slot:actions>
             <a href="{{ route('employee.calls') }}" class="saas-btn-secondary text-sm">تماس‌های من</a>
@@ -61,7 +62,7 @@
         </x-slot:actions>
     </x-saas.page-header>
 
-    <section class="saas-hero saas-hero--accent">
+    <section class="saas-hero saas-hero--accent" data-tour="coaching-hero">
         <div class="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
             <div class="flex items-start gap-5">
                 <x-saas.avatar :employee="$membership" size="xl" ring />
@@ -86,21 +87,21 @@
         'activePreset' => $activePreset,
     ])
 
-    <div class="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+    <div class="grid gap-4 sm:grid-cols-2 xl:grid-cols-4" data-tour="coaching-stats">
         <x-saas.stat-card label="تماس‌های تحلیل‌شده" :value="$analyzedCount" hint="در بازه انتخاب‌شده" />
         <x-saas.stat-card label="میانگین امتیاز" :value="$metrics['average_quality_score'] ?: '—'" hint="کیفیت مکالمه" />
-        <x-saas.stat-card label="امتیاز لید" :value="$metrics['average_lead_score'] ?: '—'" hint="میانگین کیفیت فروش" />
+        <x-saas.stat-card label="امتیاز سرنخ" :value="$metrics['average_lead_score'] ?: '—'" hint="میانگین کیفیت فروش" />
         <x-saas.stat-card label="رضایت مشتری" :value="$metrics['average_sentiment'] ? $metrics['average_sentiment'].'%' : '—'" />
     </div>
 
     @if ($analyzedCount === 0)
         <div class="saas-card">
             <x-saas.empty-state
-                title="داده‌ای برای مربیگری وجود ندارد"
-                description="پس از تحلیل تماس‌ها در این بازه، پیشنهادهای مربیگری و برنامه رشد اینجا نمایش داده می‌شوند."
+                title="@lang('ui.empty.no_coaching.title')"
+                description="@lang('ui.empty.no_coaching.description')"
             >
                 <div class="mt-6 flex flex-wrap justify-center gap-2">
-                    <a href="{{ route('employee.uploads') }}" class="saas-btn-primary text-sm">آپلود تماس</a>
+                    <a href="{{ route('employee.uploads') }}" class="saas-btn-primary text-sm">@lang('ui.cta.upload_first_call')</a>
                     <a href="{{ route('employee.calls') }}" class="saas-btn-secondary text-sm">تماس‌های من</a>
                 </div>
             </x-saas.empty-state>
@@ -118,7 +119,7 @@
                                 <span>{{ $area }}</span>
                             </li>
                         @empty
-                            <li class="text-sm text-zinc-500">پیشنهاد آموزشی ثبت نشده</li>
+                            <li class="text-sm text-zinc-500">با تحلیل تماس‌های بیشتر، پیشنهادهای آموزشی اینجا ظاهر می‌شوند.</li>
                         @endforelse
                     </ul>
                 </div>
@@ -153,7 +154,7 @@
             </div>
         @endif
 
-        <div class="saas-card">
+        <div class="saas-card" data-tour="coaching-insights">
             <div class="flex flex-wrap items-start justify-between gap-3">
                 <div>
                     <h2 class="text-lg font-semibold">نقاط قوت پرتکرار</h2>
@@ -223,7 +224,10 @@
                 </div>
             @else
                 <div class="mt-4">
-                    <x-saas.empty-state title="نقطه قوت ثبت نشده" description="پس از تحلیل تماس‌های بیشتر، نقاط قوت پرتکرار اینجا نمایش داده می‌شوند." />
+                    <x-saas.empty-state
+                        title="@lang('ui.empty.no_strengths.title')"
+                        description="@lang('ui.empty.no_strengths.description')"
+                    />
                 </div>
             @endif
         </div>
@@ -253,7 +257,10 @@
                             </div>
                         </li>
                     @empty
-                        <x-saas.empty-state title="ضعف پرتکراری ثبت نشده" />
+                        <x-saas.empty-state
+                            title="@lang('ui.empty.no_improvements.title')"
+                            description="@lang('ui.empty.no_improvements.description')"
+                        />
                     @endforelse
                 </ul>
             </div>
@@ -301,7 +308,10 @@
                             </a>
                         </li>
                     @empty
-                        <x-saas.empty-state title="اقدام بعدی ثبت نشده" />
+                        <x-saas.empty-state
+                            title="@lang('ui.empty.no_followups.title')"
+                            description="@lang('ui.empty.no_followups.description')"
+                        />
                     @endforelse
                 </ul>
             </div>
@@ -330,7 +340,10 @@
                             @endif
                         </a>
                     @empty
-                        <x-saas.empty-state title="تماس ضعیفی برای تمرین نیست" description="عالی است! یا بازه را گسترده‌تر کنید." />
+                        <x-saas.empty-state
+                            title="تماس مناسبی برای تمرین نیست"
+                            description="این بازه تماس با امتیاز پایین ندارد — بازه زمانی را گسترده‌تر کنید یا به تحلیل تماس‌های بیشتر ادامه دهید."
+                        />
                     @endforelse
                 </div>
             </div>
