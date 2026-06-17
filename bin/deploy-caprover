@@ -1,0 +1,58 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+ENV_FILE="${CAPROVER_ENV_FILE:-$ROOT_DIR/.env.caprover}"
+
+if [[ ! -f "$ENV_FILE" ]]; then
+    echo "Missing $ENV_FILE" >&2
+    echo "Copy .env.caprover.example to .env.caprover and set your CapRover credentials." >&2
+    exit 1
+fi
+
+if [[ ! -f "$ROOT_DIR/captain-definition" ]]; then
+    echo "Missing captain-definition in project root." >&2
+    exit 1
+fi
+
+set -a
+# shellcheck disable=SC1090
+source "$ENV_FILE"
+set +a
+
+: "${CAPROVER_URL:?Set CAPROVER_URL in .env.caprover}"
+: "${CAPROVER_APP:?Set CAPROVER_APP in .env.caprover}"
+
+if [[ -z "${CAPROVER_APP_TOKEN:-}" && -z "${CAPROVER_PASSWORD:-}" ]]; then
+    echo "Set CAPROVER_APP_TOKEN or CAPROVER_PASSWORD in .env.caprover." >&2
+    exit 1
+fi
+
+cd "$ROOT_DIR"
+
+args=(
+    deploy
+    --caproverUrl "$CAPROVER_URL"
+    --caproverApp "$CAPROVER_APP"
+)
+
+if [[ -n "${CAPROVER_APP_TOKEN:-}" ]]; then
+    args+=(--appToken "$CAPROVER_APP_TOKEN")
+else
+    args+=(--caproverPassword "$CAPROVER_PASSWORD")
+fi
+
+if [[ -n "${CAPROVER_NAME:-}" ]]; then
+    args+=(--caproverName "$CAPROVER_NAME")
+fi
+
+if [[ -n "${CAPROVER_BRANCH:-}" ]]; then
+    args+=(--branch "$CAPROVER_BRANCH")
+fi
+
+if [[ $# -gt 0 ]]; then
+    args+=("$@")
+fi
+
+echo "Deploying to CapRover app: $CAPROVER_APP ($CAPROVER_URL)"
+exec npx --yes caprover@latest "${args[@]}"
