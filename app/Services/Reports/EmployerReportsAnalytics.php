@@ -237,8 +237,7 @@ class EmployerReportsAnalytics
         }
 
         if ($filter->drilldownDimension === 'lead_level' && $filter->drilldownValue) {
-            $level = (string) $filter->drilldownValue;
-            $query->whereRaw("json_extract(lead_quality_json, '$.level') = ?", [$level]);
+            $query->where('lead_quality_json->level', (string) $filter->drilldownValue);
         }
 
         if ($filter->drilldownDimension === 'concern_type' && $filter->drilldownValue) {

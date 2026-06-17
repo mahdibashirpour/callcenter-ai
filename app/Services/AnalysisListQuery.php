@@ -22,9 +22,9 @@ class AnalysisListQuery
     /** @return Builder<ConversationAnalysis> */
     public function baseQuery(AnalysisListFilter $filter): Builder
     {
-        return $this->filteredQuery($filter)->tap(
-            fn (Builder $query) => $filter->applySort($query),
-        );
+        return $this->filteredQuery($filter)
+            ->select('conversation_analyses.*')
+            ->tap(fn (Builder $query) => $filter->applySort($query));
     }
 
     /** @return Builder<ConversationAnalysis> */
@@ -33,8 +33,7 @@ class AnalysisListQuery
         $query = ConversationAnalysis::query()
             ->leftJoin('calls', 'conversation_analyses.call_id', '=', 'calls.id')
             ->leftJoin('voip_call_logs', 'conversation_analyses.voip_call_log_id', '=', 'voip_call_logs.id')
-            ->leftJoin('organization_user', 'conversation_analyses.organization_user_id', '=', 'organization_user.id')
-            ->select('conversation_analyses.*');
+            ->leftJoin('organization_user', 'conversation_analyses.organization_user_id', '=', 'organization_user.id');
 
         return $filter->apply($query);
     }
