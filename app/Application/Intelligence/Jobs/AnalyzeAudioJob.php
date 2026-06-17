@@ -132,7 +132,7 @@ class AnalyzeAudioJob implements ShouldQueue
 
     public static function dispatchChain(int $callId, ?string $recordingUrl = null): void
     {
-        self::chain($callId, $recordingUrl)->dispatch();
+        self::buildChain($callId, $recordingUrl)->dispatch();
     }
 
     public static function dispatchChainSync(int $callId, ?string $recordingUrl = null): void
@@ -142,7 +142,7 @@ class AnalyzeAudioJob implements ShouldQueue
         SyncCrmJob::dispatchSync($callId);
     }
 
-    private static function chain(int $callId, ?string $recordingUrl = null): \Illuminate\Foundation\Bus\PendingChain
+    private static function buildChain(int $callId, ?string $recordingUrl = null): \Illuminate\Foundation\Bus\PendingChain
     {
         return Bus::chain([
             new self($callId, $recordingUrl),
