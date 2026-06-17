@@ -3,11 +3,11 @@
 FROM php:8.4-cli-alpine AS vendor
 
 RUN apk add --no-cache \
-        git \
-        icu-dev \
-        libzip-dev \
-        unzip \
-        $PHPIZE_DEPS \
+    git \
+    icu-dev \
+    libzip-dev \
+    unzip \
+    $PHPIZE_DEPS \
     && docker-php-ext-install intl zip \
     && apk del $PHPIZE_DEPS \
     && rm -rf /var/cache/apk/* /tmp/*
@@ -15,6 +15,8 @@ RUN apk add --no-cache \
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
 WORKDIR /app
+
+RUN composer config -g repos.packagist composer https://package-mirror.liara.ir/repository/composer/ 
 
 COPY composer.json composer.lock ./
 
@@ -51,32 +53,32 @@ RUN npm run build
 FROM php:8.4-fpm-alpine AS runtime
 
 RUN apk add --no-cache \
-        nginx \
-        supervisor \
-        icu-dev \
-        libzip-dev \
-        oniguruma-dev \
-        postgresql-dev \
-        sqlite-dev \
-        freetype-dev \
-        libjpeg-turbo-dev \
-        libpng-dev \
-        linux-headers \
-        wget \
-        $PHPIZE_DEPS \
+    nginx \
+    supervisor \
+    icu-dev \
+    libzip-dev \
+    oniguruma-dev \
+    postgresql-dev \
+    sqlite-dev \
+    freetype-dev \
+    libjpeg-turbo-dev \
+    libpng-dev \
+    linux-headers \
+    wget \
+    $PHPIZE_DEPS \
     && docker-php-ext-configure gd --with-freetype --with-jpeg \
     && docker-php-ext-install -j"$(nproc)" \
-        bcmath \
-        gd \
-        intl \
-        mbstring \
-        opcache \
-        pcntl \
-        pdo \
-        pdo_mysql \
-        pdo_pgsql \
-        pdo_sqlite \
-        zip \
+    bcmath \
+    gd \
+    intl \
+    mbstring \
+    opcache \
+    pcntl \
+    pdo \
+    pdo_mysql \
+    pdo_pgsql \
+    pdo_sqlite \
+    zip \
     && apk del $PHPIZE_DEPS \
     && rm -rf /var/cache/apk/* /tmp/*
 
@@ -94,12 +96,12 @@ COPY --from=vendor --chown=www-data:www-data /app/vendor ./vendor
 COPY --from=assets --chown=www-data:www-data /app/public/build ./public/build
 
 RUN mkdir -p \
-        storage/framework/cache/data \
-        storage/framework/sessions \
-        storage/framework/views \
-        storage/logs \
-        bootstrap/cache \
-        database \
+    storage/framework/cache/data \
+    storage/framework/sessions \
+    storage/framework/views \
+    storage/logs \
+    bootstrap/cache \
+    database \
     && chown -R www-data:www-data storage bootstrap/cache database
 
 ENV APP_ENV=production \
