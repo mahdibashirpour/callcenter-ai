@@ -20,6 +20,8 @@ class EmployerOnboarding
 
         $extras = [
             'employer.employees.create',
+            'employer.customers.companies.index',
+            'employer.customers.contacts.index',
         ];
 
         foreach ($extras as $route) {

@@ -219,13 +219,42 @@ class DemoAnalyticsBuilder
     private function seedCustomers(Organization $organization, int $orgIndex): \Illuminate\Support\Collection
     {
         $customers = collect();
-        $names = DemoCatalog::customerNames();
+        $companyNames = DemoCatalog::customerNames();
+        $personNames = [
+            'علی رضایی', 'مریم احمدی', 'حسین کریمی', 'زهرا موسوی', 'رضا نوری',
+            'فاطمه حسینی', 'مهدی جعفری', 'سارا محمدی', 'امیر صادقی', 'نرگس قاسمی',
+            'پویا اکبری', 'لیلا فرهادی',
+        ];
         $faker = fake();
         $faker->seed($organization->id * 3_331);
+
+        $contactsPerCompany = 3;
+        $companyCount = (int) ceil(DemoCatalog::CUSTOMERS_PER_ORGANIZATION / $contactsPerCompany);
+
+        $companies = collect();
+
+        for ($c = 1; $c <= $companyCount; $c++) {
+            $companyName = $companyNames[($c - 1) % count($companyNames)];
+            $companies->push(
+                \App\Models\CustomerCompany::query()->updateOrCreate(
+                    [
+                        'organization_id' => $organization->id,
+                        'normalized_name' => \App\Models\CustomerCompany::normalizeName($companyName),
+                    ],
+                    [
+                        'name' => $companyName,
+                        'industry' => $faker->randomElement(['فناوری', 'خرده‌فروشی', 'خدمات', 'صنعت', 'آموزش']),
+                        'phone' => '021'.str_pad((string) ($orgIndex * 100 + $c), 7, '0', STR_PAD_LEFT),
+                        'email' => "company-{$organization->id}-{$c}@example.com",
+                    ],
+                ),
+            );
+        }
 
         for ($i = 1; $i <= DemoCatalog::CUSTOMERS_PER_ORGANIZATION; $i++) {
             $phone = DemoCatalog::formatMobile($orgIndex, $i);
             $normalized = DemoCatalog::normalizePhone($phone);
+            $company = $companies->get((int) floor(($i - 1) / $contactsPerCompany));
 
             $customer = Customer::query()->updateOrCreate(
                 [
@@ -233,9 +262,10 @@ class DemoAnalyticsBuilder
                     'normalized_phone' => $normalized,
                 ],
                 [
+                    'customer_company_id' => $company?->id,
                     'phone_number' => $phone,
-                    'name' => $names[($i - 1) % count($names)].' #'.$i,
-                    'company_name' => $names[($i - 1) % count($names)],
+                    'name' => $personNames[($i - 1) % count($personNames)],
+                    'company_name' => $company?->name,
                     'email' => "customer-{$organization->id}-{$i}@example.com",
                     'job_title' => $faker->randomElement(['مدیر خرید', 'مسئول فنی', 'مالک کسب‌وکار', 'منشی']),
                     'identity_confidence' => $faker->randomFloat(2, 0.55, 0.98),
@@ -250,6 +280,10 @@ class DemoAnalyticsBuilder
             );
 
             $customers->push($customer);
+        }
+
+        foreach ($companies as $company) {
+            app(\App\Services\CustomerCompanyService::class)->refreshAggregates($company);
         }
 
         return $customers;

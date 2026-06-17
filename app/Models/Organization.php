@@ -84,6 +84,11 @@ class Organization extends Model
         return $this->hasMany(Customer::class);
     }
 
+    public function customerCompanies(): HasMany
+    {
+        return $this->hasMany(CustomerCompany::class);
+    }
+
     public function conversationAnalyses(): HasMany
     {
         return $this->hasMany(ConversationAnalysis::class);

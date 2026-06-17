@@ -19,7 +19,7 @@ class Show extends Component
     public function mount(Customer $customer): void
     {
         CustomerTenantGuard::assertCustomerInOrganization($customer, EmployerContext::organizationId());
-        $this->customer = $customer;
+        $this->customer = $customer->load('company');
     }
 
     public function render()
@@ -35,6 +35,11 @@ class Show extends Component
             'viewerMembershipId' => null,
             'analysisShowRoute' => 'employer.intelligence.show',
             'isEmployer' => true,
+            'companyShowRouteName' => 'employer.customers.companies.show',
+            'customerEditRouteName' => 'employer.customers.edit',
+            'customersIndexRoute' => route('employer.customers.contacts.index'),
+            'customersHubRoute' => route('employer.customers.index'),
+            'companiesListRoute' => route('employer.customers.companies.index'),
         ]);
     }
 }

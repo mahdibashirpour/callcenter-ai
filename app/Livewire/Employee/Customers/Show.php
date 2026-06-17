@@ -22,7 +22,7 @@ class Show extends Component
             $customer,
             EmployeeContext::membership()->organization_id,
         );
-        $this->customer = $customer;
+        $this->customer = $customer->load('company');
     }
 
     public function render()
@@ -39,6 +39,11 @@ class Show extends Component
             'viewerMembershipId' => $membershipId,
             'isEmployer' => false,
             'analysisShowRoute' => 'employee.calls.show',
+            'companyShowRouteName' => 'employee.customers.companies.show',
+            'customerEditRouteName' => 'employee.customers.edit',
+            'customersIndexRoute' => route('employee.customers.contacts.index'),
+            'customersHubRoute' => route('employee.customers.index'),
+            'companiesListRoute' => route('employee.customers.companies.index'),
         ]);
     }
 }

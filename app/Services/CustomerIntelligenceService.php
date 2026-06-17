@@ -6,6 +6,7 @@ use App\Domain\Llm\Enums\AnalysisSentiment;
 use App\Models\Call;
 use App\Models\ConversationAnalysis;
 use App\Models\Customer;
+use App\Models\CustomerCompany;
 use App\Models\OrganizationUser;
 use App\Support\CustomerPresenter;
 use App\Support\CustomerTenantGuard;
@@ -18,6 +19,8 @@ class CustomerIntelligenceService
 
     public function __construct(
         private CustomerPhoneResolver $phoneResolver,
+        private CustomerCompanyResolver $companyResolver,
+        private CustomerCompanyService $companyService,
     ) {}
 
     public function syncFromAnalysis(ConversationAnalysis $analysis): ?Customer
@@ -294,7 +297,30 @@ class CustomerIntelligenceService
 
         if ($updates !== []) {
             $customer->update($updates);
+            $customer->refresh();
         }
+
+        $this->syncCompanyFromIdentity($customer, $identity);
+    }
+
+    private function syncCompanyFromIdentity(Customer $customer, array $identity): void
+    {
+        $companyName = trim((string) ($customer->company_name ?? $identity['company_name'] ?? ''));
+
+        if ($companyName === '') {
+            return;
+        }
+
+        $company = $this->companyResolver->findOrCreate($customer->organization_id, $companyName);
+
+        if ($customer->customer_company_id !== $company->id || $customer->company_name !== $company->name) {
+            $customer->update([
+                'customer_company_id' => $company->id,
+                'company_name' => $company->name,
+            ]);
+        }
+
+        $this->companyService->refreshAggregates($company);
     }
 
     private function shouldReplaceField(?string $current, string $incoming, float $newConfidence, float $currentConfidence): bool
@@ -366,6 +392,14 @@ class CustomerIntelligenceService
             'conversation_trend' => $trend,
             'recommended_next_action' => $nextActions[0] ?? null,
         ]);
+
+        if ($customer->customer_company_id) {
+            $company = CustomerCompany::query()->find($customer->customer_company_id);
+
+            if ($company) {
+                $this->companyService->refreshAggregates($company);
+            }
+        }
     }
 
     private function detectTrend(Collection $scores): ?string

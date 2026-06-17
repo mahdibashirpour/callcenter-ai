@@ -82,6 +82,8 @@ class CustomerIntelligenceTest extends TestCase
         $this->assertSame('علی رضایی', $customer->name);
         $this->assertSame('09121234567', $customer->phone_number);
         $this->assertSame('09121234567', $customer->normalized_phone);
+        $this->assertNotNull($customer->customer_company_id);
+        $this->assertSame('آلفا', $customer->company?->name);
         $this->assertSame(1, $customer->total_calls);
         $this->assertSame($customer->id, $call->fresh()->customer_id);
     }

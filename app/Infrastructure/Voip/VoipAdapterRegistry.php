@@ -50,7 +50,7 @@ class VoipAdapterRegistry
 
     public function loadFromDatabase(): void
     {
-        if (! Schema::hasTable('voip_providers')) {
+        if (! $this->voipProvidersTableExists()) {
             return;
         }
 
@@ -82,7 +82,7 @@ class VoipAdapterRegistry
             return $this->adapters[$code];
         }
 
-        if (! Schema::hasTable('voip_providers')) {
+        if (! $this->voipProvidersTableExists()) {
             return null;
         }
 
@@ -97,5 +97,14 @@ class VoipAdapterRegistry
         }
 
         return null;
+    }
+
+    private function voipProvidersTableExists(): bool
+    {
+        try {
+            return Schema::hasTable('voip_providers');
+        } catch (\Throwable) {
+            return false;
+        }
     }
 }

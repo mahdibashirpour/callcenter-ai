@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 #[Fillable([
     'organization_id',
+    'customer_company_id',
     'normalized_phone',
     'phone_number',
     'name',
@@ -58,6 +59,11 @@ class Customer extends Model
         return $this->belongsTo(Organization::class);
     }
 
+    public function company(): BelongsTo
+    {
+        return $this->belongsTo(CustomerCompany::class, 'customer_company_id');
+    }
+
     public function calls(): HasMany
     {
         return $this->hasMany(Call::class);
@@ -72,8 +78,14 @@ class Customer extends Model
     public function displayName(): string
     {
         return $this->name
+            ?: $this->company?->name
             ?: $this->company_name
             ?: $this->phone_number
             ?: 'مشتری';
+    }
+
+    public function companyLabel(): ?string
+    {
+        return $this->company?->name ?: $this->company_name;
     }
 }

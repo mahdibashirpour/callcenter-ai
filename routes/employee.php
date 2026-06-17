@@ -4,6 +4,11 @@ use App\Livewire\Employee\Activity\Index as ActivityIndex;
 use App\Livewire\Employee\Calls\Index as CallsIndex;
 use App\Livewire\Employee\Calls\Show as CallsShow;
 use App\Livewire\Employee\Coaching\Index as CoachingIndex;
+use App\Livewire\Employee\Customers\Companies\Create as CustomerCompaniesCreate;
+use App\Livewire\Employee\Customers\Companies\Edit as CustomerCompaniesEdit;
+use App\Livewire\Employee\Customers\Companies\Index as CustomerCompaniesIndex;
+use App\Livewire\Employee\Customers\Companies\Show as CustomerCompaniesShow;
+use App\Livewire\Employee\Customers\Contacts\Index as CustomerContactsIndex;
 use App\Livewire\Employee\Customers\Edit as CustomersEdit;
 use App\Livewire\Employee\Customers\Index as CustomersIndex;
 use App\Livewire\Employee\Customers\Show as CustomersShow;
@@ -29,6 +34,11 @@ Route::middleware(['auth', 'employee'])->group(function () {
     Route::get('/calls/{analysis}', CallsShow::class)->name('calls.show');
     Route::prefix('customers')->name('customers.')->group(function () {
         Route::get('/', CustomersIndex::class)->name('index');
+        Route::get('/companies', CustomerCompaniesIndex::class)->name('companies.index');
+        Route::get('/contacts', CustomerContactsIndex::class)->name('contacts.index');
+        Route::get('/companies/create', CustomerCompaniesCreate::class)->name('companies.create');
+        Route::get('/companies/{customerCompany}/edit', CustomerCompaniesEdit::class)->name('companies.edit');
+        Route::get('/companies/{customerCompany}', CustomerCompaniesShow::class)->name('companies.show');
         Route::get('/{customer}/edit', CustomersEdit::class)->name('edit');
         Route::get('/{customer}', CustomersShow::class)->name('show');
     });

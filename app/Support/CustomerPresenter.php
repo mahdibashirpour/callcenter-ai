@@ -79,7 +79,8 @@ class CustomerPresenter
     public static function listSubtitle(Customer $customer): string
     {
         return collect([
-            $customer->company_name,
+            $customer->companyLabel(),
+            $customer->job_title,
             $customer->phone_number,
         ])->filter()->implode(' · ') ?: '—';
     }
@@ -87,7 +88,7 @@ class CustomerPresenter
     public static function subtitle(Customer $customer): string
     {
         return collect([
-            $customer->company_name,
+            $customer->companyLabel(),
             $customer->job_title,
             $customer->phone_number,
         ])->filter()->implode(' · ') ?: '—';

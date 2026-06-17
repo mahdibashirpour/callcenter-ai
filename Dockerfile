@@ -30,6 +30,7 @@ COPY . .
 RUN composer install \
     --no-dev \
     --no-interaction \
+    --no-scripts \
     --prefer-dist \
     --optimize-autoloader
 
@@ -55,6 +56,7 @@ RUN apk add --no-cache \
         icu-dev \
         libzip-dev \
         oniguruma-dev \
+        postgresql-dev \
         sqlite-dev \
         freetype-dev \
         libjpeg-turbo-dev \
@@ -72,6 +74,7 @@ RUN apk add --no-cache \
         pcntl \
         pdo \
         pdo_mysql \
+        pdo_pgsql \
         pdo_sqlite \
         zip \
     && apk del $PHPIZE_DEPS \

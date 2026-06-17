@@ -18,6 +18,17 @@ class EmployeeOnboarding
             }
         }
 
+        $extras = [
+            'employee.customers.companies.index',
+            'employee.customers.contacts.index',
+        ];
+
+        foreach ($extras as $route) {
+            if (Route::has($route)) {
+                $urls[$route] = route($route);
+            }
+        }
+
         return $urls;
     }
 }

@@ -3,44 +3,45 @@
 namespace App\Livewire\Employee\Customers;
 
 use App\Models\Customer;
+use App\Models\CustomerCompany;
 use App\Services\EmployeeContext;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Title;
 use Livewire\Component;
-use Livewire\WithPagination;
 
 #[Layout('layouts.employee')]
 #[Title('مشتریان')]
 class Index extends Component
 {
-    use WithPagination;
-
-    public string $search = '';
-
-    public function updatedSearch(): void
-    {
-        $this->resetPage();
-    }
-
     public function render()
     {
         $organizationId = EmployeeContext::membership()->organization_id;
 
-        $customers = Customer::query()
-            ->forOrganization($organizationId)
-            ->when($this->search !== '', function ($query) {
-                $term = '%'.$this->search.'%';
-                $query->where(function ($inner) use ($term) {
-                    $inner->where('name', 'like', $term)
-                        ->orWhere('company_name', 'like', $term)
-                        ->orWhere('phone_number', 'like', $term);
-                });
-            })
-            ->orderByDesc('last_contact_at')
-            ->paginate(15);
+        $stats = [
+            'companies' => CustomerCompany::query()->forOrganization($organizationId)->count(),
+            'contacts' => Customer::query()->forOrganization($organizationId)->count(),
+            'unassigned' => Customer::query()->forOrganization($organizationId)->whereNull('customer_company_id')->count(),
+            'calls' => (int) Customer::query()->forOrganization($organizationId)->sum('total_calls'),
+        ];
 
-        return view('livewire.employee.customers.index', [
-            'customers' => $customers,
+        $recentCompanies = CustomerCompany::query()
+            ->forOrganization($organizationId)
+            ->orderByDesc('last_contact_at')
+            ->limit(4)
+            ->get();
+
+        $recentContacts = Customer::query()
+            ->forOrganization($organizationId)
+            ->with('company')
+            ->orderByDesc('last_contact_at')
+            ->limit(6)
+            ->get();
+
+        return view('livewire.shared.customers.hub', [
+            'stats' => $stats,
+            'recentCompanies' => $recentCompanies,
+            'recentContacts' => $recentContacts,
+            'portal' => 'employee',
         ]);
     }
 }

@@ -18,6 +18,8 @@ if [ "$DB_CONNECTION" = "sqlite" ] && [ ! -f database/database.sqlite ]; then
     chown www-data:www-data database/database.sqlite 2>/dev/null || true
 fi
 
+php artisan package:discover --ansi
+
 if [ "$APP_ENV" = "production" ]; then
     php artisan config:cache
     php artisan route:cache

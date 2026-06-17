@@ -141,34 +141,161 @@ export const employerPageTours = {
         label: 'مشتریان',
         steps: [
             {
-                selector: '[data-tour="page-header"]',
+                center: true,
                 title: 'پایگاه مشتریان',
-                content: 'مشتریان به‌صورت خودکار از تحلیل تماس‌ها ساخته می‌شوند.',
+                content: 'این بخش به سه قسمت تقسیم شده: نمای کلی، سازمان‌ها (شرکت‌ها) و مخاطبین (افراد). در ادامه هر کدام را می‌بینیم.',
             },
             {
-                selector: '[data-tour="customers-search"]',
-                title: 'جستجوی مشتری',
-                content: 'جستجو بر اساس نام، شرکت یا شماره تماس.',
+                selector: '[data-tour="customers-section-nav"]',
+                title: 'ناوبری بخش‌ها',
+                content: 'با این تب‌ها بین نمای کلی، لیست سازمان‌ها و لیست مخاطبین جابه‌جا شوید.',
             },
             {
-                selector: '[data-tour="customers-grid"]',
-                title: 'کارت‌های مشتری',
-                content: 'کلیک روی هر کارت برای مشاهده تاریخچه تماس، امتیاز و بینش‌های هوش مشتری.',
+                selector: '[data-tour="customers-hub-stats"]',
+                title: 'آمار کلی',
+                content: 'تعداد سازمان‌ها، مخاطبین، مخاطبین بدون سازمان و کل تماس‌های ثبت‌شده را یکجا ببینید.',
+            },
+            {
+                selector: '[data-tour="customers-hub-companies"]',
+                title: 'ورود به سازمان‌ها',
+                content: 'شرکت‌ها و سازمان‌های مشتری — هر سازمان می‌تواند چند مخاطب و آمار تجمیعی داشته باشد.',
+            },
+            {
+                selector: '[data-tour="customers-hub-contacts"]',
+                title: 'ورود به مخاطبین',
+                content: 'افراد حقیقی — پروفایل تماس، امتیاز لید و اتصال به سازمان مربوطه.',
+            },
+            {
+                center: true,
+                title: 'لیست سازمان‌ها',
+                content: 'حالا بخش سازمان‌ها را باز می‌کنیم تا جستجو و کارت‌های هر شرکت را ببینید.',
+                route: 'employer.customers.companies.index',
+            },
+            {
+                selector: '[data-tour="customers-section-nav"]',
+                title: 'تب سازمان‌ها',
+                content: 'از اینجا می‌توانید سازمان جدید ثبت کنید یا به نمای کلی و مخاطبین برگردید.',
+            },
+            {
+                selector: '[data-tour="customers-companies-search"]',
+                title: 'جستجوی سازمان',
+                content: 'جستجو بر اساس نام، صنعت، تلفن یا ایمیل سازمان.',
+            },
+            {
+                selector: '[data-tour="customers-companies-grid"]',
+                title: 'کارت‌های سازمان',
+                content: 'روی هر کارت کلیک کنید تا مخاطبان، آمار تماس و نمودارهای تجمیعی آن سازمان را ببینید.',
+            },
+            {
+                center: true,
+                title: 'لیست مخاطبین',
+                content: 'حالا بخش مخاطبین را می‌بینیم — همه افراد، چه به سازمانی متصل باشند چه نباشند.',
+                route: 'employer.customers.contacts.index',
+            },
+            {
+                selector: '[data-tour="customers-section-nav"]',
+                title: 'تب مخاطبین',
+                content: 'مخاطبین را جدا از سازمان‌ها مدیریت کنید؛ هر مخاطب می‌تواند به یک سازمان متصل باشد.',
+            },
+            {
+                selector: '[data-tour="customers-contacts-search"]',
+                title: 'جستجوی مخاطب',
+                content: 'جستجو بر اساس نام، سازمان، شماره تماس یا ایمیل.',
+            },
+            {
+                selector: '[data-tour="customers-contacts-grid"]',
+                title: 'کارت‌های مخاطب',
+                content: 'روی هر کارت کلیک کنید تا تاریخچه تماس، امتیاز و بینش‌های هوش مشتری را ببینید.',
+            },
+        ],
+    },
+    'employer.customers.companies.index': {
+        label: 'سازمان‌ها',
+        steps: [
+            {
+                selector: '[data-tour="customers-section-nav"]',
+                title: 'ناوبری بخش‌ها',
+                content: 'سه تب: نمای کلی، سازمان‌ها و مخاطبین. الان در بخش سازمان‌ها هستید.',
+            },
+            {
+                selector: '[data-tour="page-header"]',
+                title: 'لیست سازمان‌ها',
+                content: 'شرکت‌ها و سازمان‌های مشتری — با دکمه «سازمان جدید» می‌توانید دستی هم ثبت کنید.',
+            },
+            {
+                selector: '[data-tour="customers-companies-search"]',
+                title: 'جستجو',
+                content: 'فیلتر سریع بر اساس نام، صنعت، تلفن یا ایمیل.',
+            },
+            {
+                selector: '[data-tour="customers-companies-grid"]',
+                title: 'کارت‌های سازمان',
+                content: 'تعداد مخاطب، تماس‌ها و امتیاز تجمیعی هر سازمان روی کارت نمایش داده می‌شود.',
+            },
+        ],
+    },
+    'employer.customers.contacts.index': {
+        label: 'مخاطبین',
+        steps: [
+            {
+                selector: '[data-tour="customers-section-nav"]',
+                title: 'ناوبری بخش‌ها',
+                content: 'سه تب: نمای کلی، سازمان‌ها و مخاطبین. الان در بخش مخاطبین هستید.',
+            },
+            {
+                selector: '[data-tour="page-header"]',
+                title: 'لیست مخاطبین',
+                content: 'همه افراد — با یا بدون سازمان. پروفایل از تحلیل تماس‌ها ساخته می‌شود.',
+            },
+            {
+                selector: '[data-tour="customers-contacts-search"]',
+                title: 'جستجو',
+                content: 'جستجو بر اساس نام، سازمان، شماره یا ایمیل مخاطب.',
+            },
+            {
+                selector: '[data-tour="customers-contacts-grid"]',
+                title: 'کارت‌های مخاطب',
+                content: 'برای جزئیات تماس، امتیاز لید و تاریخچه تعامل روی هر کارت کلیک کنید.',
+            },
+        ],
+    },
+    'employer.customers.companies.show': {
+        label: 'جزئیات سازمان',
+        steps: [
+            {
+                selector: '[data-tour="company-profile"]',
+                title: 'پروفایل سازمان',
+                content: 'نام، صنعت، روند مکالمه و سطح لید تجمیعی این سازمان.',
+            },
+            {
+                selector: '[data-tour="company-stats"]',
+                title: 'آمار سازمان',
+                content: 'تعداد مخاطبان، کل تماس‌ها، تماس‌های تحلیل‌شده و میانگین امتیاز.',
+            },
+            {
+                selector: '[data-tour="company-contacts"]',
+                title: 'مخاطبان سازمان',
+                content: 'افراد متصل به این سازمان — برای پروفیل هر مخاطب روی کارت کلیک کنید.',
+            },
+            {
+                selector: '[data-tour="company-analytics"]',
+                title: 'تحلیل تجمیعی',
+                content: 'روند امتیاز، توزیع احساسات و نگرانی‌های پرتکرار بر اساس تمام تماس‌های مخاطبان.',
             },
         ],
     },
     'employer.customers.show': {
-        label: 'جزئیات مشتری',
+        label: 'جزئیات مخاطب',
         steps: [
             {
                 selector: '[data-tour="customer-profile"]',
-                title: 'پروفایل مشتری',
-                content: 'اطلاعات تماس، امتیاز کلی و خلاصه هوش مشتری.',
+                title: 'پروفایل مخاطب',
+                content: 'اطلاعات تماس، سازمان مرتبط، امتیاز کلی و خلاصه هوش مشتری.',
             },
             {
                 selector: '[data-tour="customer-timeline"]',
                 title: 'تاریخچه تعامل',
-                content: 'تماس‌ها و تحلیل‌های مرتبط با این مشتری.',
+                content: 'تماس‌ها و تحلیل‌های مرتبط با این مخاطب.',
             },
         ],
     },
@@ -334,7 +461,7 @@ const navSteps = [
     ['employer.intelligence.performance', 'عملکرد کارشناسان', 'رتبه‌بندی، مقایسه و مربیگری تیم تماس.'],
     ['employer.intelligence.index', 'تحلیل تماس‌ها', 'فهرست تمام تحلیل‌ها با فیلتر و جزئیات هر مکالمه.'],
     ['employer.employees.index', 'کارشناسان', 'مدیریت اعضای تیم و دسترسی‌ها.'],
-    ['employer.customers.index', 'مشتریان', 'هوش مشتری ساخته‌شده از تماس‌ها.'],
+    ['employer.customers.index', 'مشتریان', 'سازمان‌ها و مخاطبین — پروفایل خودکار از تحلیل تماس‌ها، با آمار تجمیعی برای هر شرکت.'],
     ['employer.manual-analyses.index', 'آپلود دستی', 'تحلیل فایل صوتی بدون VoIP.'],
     ['employer.processing-queue.index', 'صف تحلیل', 'پیگیری وضعیت پردازش فایل‌های در صف.'],
     ['employer.crm.index', 'CRM', 'اتصال سیستم ارتباط با مشتری.'],
@@ -406,6 +533,10 @@ export const employerRouteMatchers = [
     { pattern: /^\/app\/manual-analyses\/?$/, route: 'employer.manual-analyses.index' },
     { pattern: /^\/app\/processing-queue\/\d+\/?$/, route: 'employer.processing-queue.show' },
     { pattern: /^\/app\/processing-queue\/?$/, route: 'employer.processing-queue.index' },
+    { pattern: /^\/app\/customers\/companies\/?$/, route: 'employer.customers.companies.index' },
+    { pattern: /^\/app\/customers\/contacts\/?$/, route: 'employer.customers.contacts.index' },
+    { pattern: /^\/app\/customers\/companies\/\d+\/?$/, route: 'employer.customers.companies.show' },
+    { pattern: /^\/app\/customers\/\d+\/edit\/?$/, route: 'employer.customers.edit' },
     { pattern: /^\/app\/customers\/\d+\/?$/, route: 'employer.customers.show' },
     { pattern: /^\/app\/customers\/?$/, route: 'employer.customers.index' },
     { pattern: /^\/app\/crm\/?$/, route: 'employer.crm.index' },

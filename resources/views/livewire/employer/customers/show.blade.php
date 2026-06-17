@@ -93,12 +93,29 @@
         </div>
     @endif
 
+    <nav class="text-sm text-zinc-500">
+        <a href="{{ $customersHubRoute }}" class="hover:text-indigo-600" wire:navigate>مشتریان</a>
+        <span class="mx-2">/</span>
+        <a href="{{ $customersIndexRoute }}" class="hover:text-indigo-600" wire:navigate>لیست مخاطبین</a>
+        @if ($customer->company)
+            <span class="mx-2">/</span>
+            <a href="{{ route($companyShowRouteName, $customer->company) }}" class="hover:text-indigo-600" wire:navigate>{{ $customer->company->displayName() }}</a>
+        @endif
+        <span class="mx-2">/</span>
+        <span class="text-zinc-800 dark:text-zinc-200">{{ $customer->displayName() }}</span>
+    </nav>
+
+    @php
+        $customerPortal = $isEmployer ? 'employer' : 'employee';
+    @endphp
+    @include('livewire.shared.customers.partials.section-nav', ['portal' => $customerPortal, 'active' => 'contacts'])
+
     <section class="saas-hero" data-tour="customer-profile">
         <div class="flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between">
             <div class="flex items-start gap-5">
                 <x-saas.avatar :name="$customer->displayName()" size="xl" ring />
                 <div class="min-w-0">
-                    <p class="text-sm font-medium text-indigo-600">پروفایل مشتری</p>
+                    <p class="text-sm font-medium text-indigo-600">مخاطب{{ $customer->company ? ' · '.$customer->company->displayName() : '' }}</p>
                     <h1 class="text-3xl font-semibold tracking-tight">{{ $customer->displayName() }}</h1>
                     <p class="mt-1 text-zinc-500">{{ CustomerPresenter::subtitle($customer) }}</p>
                     <div class="mt-3 flex flex-wrap gap-2">
@@ -129,8 +146,8 @@
                     />
                 @endif
                 <div class="flex flex-wrap gap-2">
-                    <a href="{{ route($isEmployer ? 'employer.customers.edit' : 'employee.customers.edit', $customer) }}" class="saas-btn-primary text-sm">ویرایش</a>
-                    <a href="{{ $isEmployer ? route('employer.customers.index') : route('employee.customers.index') }}" class="saas-btn-secondary text-sm">بازگشت به لیست</a>
+                    <a href="{{ route($customerEditRouteName, $customer) }}" class="saas-btn-primary text-sm" wire:navigate>ویرایش مخاطب</a>
+                    <a href="{{ $customersIndexRoute }}" class="saas-btn-secondary text-sm" wire:navigate>لیست مخاطبین</a>
                 </div>
             </div>
         </div>

@@ -1,6 +1,11 @@
 <?php
 
 use App\Livewire\Employer\Crm\Index as CrmIndex;
+use App\Livewire\Employer\Customers\Companies\Create as CustomerCompaniesCreate;
+use App\Livewire\Employer\Customers\Companies\Edit as CustomerCompaniesEdit;
+use App\Livewire\Employer\Customers\Companies\Index as CustomerCompaniesIndex;
+use App\Livewire\Employer\Customers\Companies\Show as CustomerCompaniesShow;
+use App\Livewire\Employer\Customers\Contacts\Index as CustomerContactsIndex;
 use App\Livewire\Employer\Customers\Edit as CustomersEdit;
 use App\Livewire\Employer\Customers\Index as CustomersIndex;
 use App\Livewire\Employer\Customers\Show as CustomersShow;
@@ -53,6 +58,11 @@ Route::middleware(['auth', 'employer'])->group(function () {
     Route::get('/crm', CrmIndex::class)->name('crm.index');
     Route::prefix('customers')->name('customers.')->group(function () {
         Route::get('/', CustomersIndex::class)->name('index');
+        Route::get('/companies', CustomerCompaniesIndex::class)->name('companies.index');
+        Route::get('/contacts', CustomerContactsIndex::class)->name('contacts.index');
+        Route::get('/companies/create', CustomerCompaniesCreate::class)->name('companies.create');
+        Route::get('/companies/{customerCompany}/edit', CustomerCompaniesEdit::class)->name('companies.edit');
+        Route::get('/companies/{customerCompany}', CustomerCompaniesShow::class)->name('companies.show');
         Route::get('/{customer}/edit', CustomersEdit::class)->name('edit');
         Route::get('/{customer}', CustomersShow::class)->name('show');
     });
