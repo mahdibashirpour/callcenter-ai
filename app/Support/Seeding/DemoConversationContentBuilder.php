@@ -44,7 +44,7 @@ final class DemoConversationContentBuilder
         int $durationSeconds,
         string $organizationTitle,
     ): array {
-        $faker = fake();
+        $faker = \fake();
         $faker->seed($seed);
 
         $scenario = DemoCatalog::callScenarios()[$seed % count(DemoCatalog::callScenarios())];

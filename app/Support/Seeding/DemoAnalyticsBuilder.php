@@ -42,7 +42,7 @@ class DemoAnalyticsBuilder
         for ($callIndex = 1; $callIndex <= DemoCatalog::CALLS_PER_ORGANIZATION; $callIndex++) {
             $employee = $employees->get(($callIndex - 1) % $employees->count());
             $customer = $customers->get(($callIndex - 1) % $customers->count());
-            $faker = fake();
+            $faker = \fake();
             $faker->seed($organization->id * 9_001 + $callIndex);
             $startedAt = $this->startedAtForDemoCall($organization->id, $callIndex, $faker);
             $duration = $faker->numberBetween(120, 900);
@@ -225,7 +225,7 @@ class DemoAnalyticsBuilder
             'فاطمه حسینی', 'مهدی جعفری', 'سارا محمدی', 'امیر صادقی', 'نرگس قاسمی',
             'پویا اکبری', 'لیلا فرهادی',
         ];
-        $faker = fake();
+        $faker = \fake();
         $faker->seed($organization->id * 3_331);
 
         $contactsPerCompany = 3;
