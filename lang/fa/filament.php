@@ -11,6 +11,7 @@ return [
             'crm' => 'CRM',
             'voip' => 'VoIP',
             'security' => 'امنیت',
+            'system' => 'سیستم',
             'organizations' => 'سازمان‌ها',
         ],
         'dashboard' => 'داشبورد',
@@ -33,6 +34,9 @@ return [
         'voip_providers' => 'ارائه‌دهندگان VoIP',
         'voip_connections' => 'اتصالات VoIP',
         'impersonation_logs' => 'گزارش ورود به حساب کاربر',
+        'queue_monitor' => 'نظارت صف',
+        'failed_queue_jobs' => 'کارهای ناموفق صف',
+        'pending_queue_jobs' => 'کارهای در انتظار صف',
     ],
 
     'models' => [
@@ -53,6 +57,10 @@ return [
         'voip_connection' => 'اتصال VoIP',
         'impersonation_log' => 'گزارش ورود به حساب',
         'impersonation_logs' => 'گزارش‌های ورود به حساب',
+        'failed_queue_job' => 'کار ناموفق صف',
+        'failed_queue_jobs' => 'کارهای ناموفق صف',
+        'pending_queue_job' => 'کار در انتظار صف',
+        'pending_queue_jobs' => 'کارهای در انتظار صف',
     ],
 
     'fields' => [
@@ -146,6 +154,16 @@ return [
         'operation' => 'عملیات',
         'message' => 'پیام',
         'call_id' => 'شناسه تماس',
+        'job_class' => 'کلاس Job',
+        'job_uuid' => 'شناسه Job',
+        'error' => 'خطا',
+        'sent_data' => 'داده‌های ارسالی',
+        'chained_jobs' => 'کارهای زنجیره‌ای بعدی',
+        'raw_payload' => 'Payload خام',
+        'stack_trace' => 'جزئیات خطا',
+        'max_tries' => 'حداکثر تلاش',
+        'queued_at' => 'زمان صف',
+        'id' => 'شناسه',
         'to' => 'به',
         'connections' => 'اتصالات',
         'adapter' => 'آداپتر',
@@ -270,6 +288,11 @@ return [
         'model_details' => 'مشخصات مدل',
         'token_pricing' => 'قیمت‌گذاری توکن',
         'token_pricing_description' => 'قیمت هر یک میلیون توکن به ارز واحد (نه ارز کیف پول). برای تبدیل به ارز کیف پول، نرخ را در صورتحساب پلتفرم تنظیم کنید.',
+        'job_summary' => 'خلاصه کار',
+        'job_payload' => 'داده‌های Job',
+        'error_details' => 'جزئیات خطا',
+        'raw_payload' => 'Payload خام',
+        'queue_monitor_help' => 'راهنما',
     ],
 
     'relation_managers' => [
@@ -314,6 +337,9 @@ return [
         'delete_all_demo_data' => 'حذف همه داده‌های دمو',
         'delete_all_demo_organizations' => 'حذف همه سازمان‌های دمو',
         'add_demo_user' => 'افزودن کاربر دمو دیگر',
+        'retry_job' => 'تلاش مجدد',
+        'retry_all_failed_jobs' => 'تلاش مجدد همه',
+        'flush_failed_jobs' => 'پاک‌سازی ناموفق‌ها',
     ],
 
     'demo_users' => [
@@ -363,6 +389,7 @@ return [
         'failed' => 'ناموفق',
         'active' => 'فعال',
         'inactive' => 'غیرفعال',
+        'queued' => 'در صف',
     ],
 
     'notifications' => [
@@ -374,6 +401,10 @@ return [
         'credits_added' => 'اعتبار افزوده شد.',
         'credits_deducted' => 'اعتبار کسر شد.',
         'settings_saved' => 'تنظیمات ذخیره شد.',
+        'queue_job_retried' => 'کار دوباره به صف اضافه شد.',
+        'queue_job_deleted' => 'کار ناموفق از صف حذف شد.',
+        'all_failed_jobs_retried' => 'همه کارهای ناموفق دوباره به صف اضافه شدند.',
+        'failed_jobs_flushed' => 'کارهای ناموفق پاک‌سازی شدند.',
     ],
 
     'widgets' => [
@@ -395,6 +426,10 @@ return [
         'cost_with_currency' => 'هزینه (:currency)',
         'conversations' => 'گفتگوها',
         'average_score' => 'میانگین امتیاز',
+        'queue_pending' => 'در انتظار صف',
+        'queue_reserved' => 'در حال اجرا',
+        'queue_failed' => 'ناموفق',
+        'queue_batches' => 'Batch فعال',
     ],
 
     'export' => [
@@ -441,6 +476,7 @@ return [
         'ai_upload_analytics' => 'تحلیل آپلودهای هوش مصنوعی',
         'platform_billing_settings' => 'تنظیمات صورتحساب پلتفرم',
         'cost_estimator' => 'برآورد هزینه',
+        'queue_monitor' => 'نظارت صف',
     ],
 
     'impersonation' => [
@@ -517,6 +553,16 @@ return [
         'model_key_helper' => 'شناسه مدل API، مثلاً gpt-5 یا claude-3-5-sonnet-latest',
         'estimator_description' => 'مصرف توکن و هزینه را قبل از اجرای تحلیل برآورد کنید. مقادیر تقریبی هستند.',
         'custom_output_ratio_helper' => 'توکن خروجی ÷ توکن ورودی. زمانی که نوع گفتگو سفارشی است استفاده می‌شود.',
+        'queue_monitor_description' => 'وضعیت صف پردازش (database driver). کارهای ناموفق را با خطا و داده‌های ارسالی (مثلاً شناسه تماس یا آدرس فایل) بررسی کنید.',
+        'queue_monitor_intro' => 'کارهای در انتظار در جدول jobs و ناموفق‌ها در failed_jobs ذخیره می‌شوند. برای تحلیل تماس، callId و recordingUrl در بخش «داده‌های ارسالی» نمایش داده می‌شود.',
+        'queue_monitor_help_body' => 'کارهای در انتظار در جدول jobs و ناموفق‌ها در failed_jobs ذخیره می‌شوند. برای تحلیل تماس، callId و recordingUrl در بخش «داده‌های ارسالی» نمایش داده می‌شود.',
+        'queue_job_payload_description' => 'مقادیر ارسالی به Job هنگام dispatch (مثلاً شناسه تماس و آدرس فایل صوتی).',
+        'queue_pending_description' => 'منتظر worker',
+        'queue_reserved_description' => 'worker در حال اجرا',
+        'queue_failed_description' => 'نیاز به بررسی',
+        'queue_batches_description' => 'زنجیره‌های batch ناتمام',
+        'unknown_job' => 'Job ناشناخته',
+        'flush_failed_jobs_description' => 'همه رکوردهای failed_jobs حذف می‌شوند. برای تلاش مجدد از «تلاش مجدد همه» استفاده کنید.',
     ],
 
     'descriptions' => [
