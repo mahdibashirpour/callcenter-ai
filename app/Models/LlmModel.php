@@ -16,6 +16,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
     'reasoning_price_per_million_tokens',
     'is_default',
     'is_active',
+    'sends_audio_file',
 ])]
 class LlmModel extends Model
 {
@@ -28,6 +29,7 @@ class LlmModel extends Model
             'reasoning_price_per_million_tokens' => 'decimal:6',
             'is_default' => 'boolean',
             'is_active' => 'boolean',
+            'sends_audio_file' => 'boolean',
         ];
     }
 

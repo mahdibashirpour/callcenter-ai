@@ -267,8 +267,14 @@ PROMPT;
     }
 
     /** @return list<array{role: string, content: mixed}> */
-    public function buildAudioMessages(AudioAnalysisRequestData $request, ?string $audioBase64 = null, ?string $audioFormat = 'mp3', bool $strictPersian = false): array
-    {
+    public function buildAudioMessages(
+        AudioAnalysisRequestData $request,
+        string $audioFormat = 'mp3',
+        bool $strictPersian = false,
+        ?string $playbackUrl = null,
+        ?string $audioBase64 = null,
+        ?string $mimeType = null,
+    ): array {
         $systemPrompt = $this->systemPrompt($request->promptVersion);
 
         if ($strictPersian) {
@@ -280,10 +286,24 @@ PROMPT;
         ];
 
         if ($audioBase64) {
+            $inputAudio = [
+                'data' => $audioBase64,
+                'format' => $audioFormat,
+            ];
+
+            if ($mimeType) {
+                $inputAudio['mime_type'] = $mimeType;
+            }
+
+            $userContent[] = [
+                'type' => 'input_audio',
+                'input_audio' => $inputAudio,
+            ];
+        } elseif ($playbackUrl) {
             $userContent[] = [
                 'type' => 'input_audio',
                 'input_audio' => [
-                    'data' => $audioBase64,
+                    'url' => $playbackUrl,
                     'format' => $audioFormat,
                 ],
             ];

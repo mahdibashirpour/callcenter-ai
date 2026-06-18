@@ -28,8 +28,7 @@ class LlmProviderForm
                                 fn (LlmProviderCode $code) => [$code->value => $code->label()],
                             ))
                             ->required()
-                            ->helperText(__('filament.misc.provider_code_helper'))
-                            ->disabledOn('edit'),
+                            ->helperText(__('filament.misc.provider_code_helper')),
                         Toggle::make('is_active')
                             ->label(__('filament.fields.active'))
                             ->default(true),

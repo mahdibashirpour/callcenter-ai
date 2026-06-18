@@ -68,6 +68,10 @@ class LlmModelForm
                         Toggle::make('is_active')
                             ->label(__('filament.fields.active'))
                             ->default(true),
+                        Toggle::make('sends_audio_file')
+                            ->label(__('filament.fields.sends_audio_file'))
+                            ->helperText(__('filament.misc.sends_audio_file_helper'))
+                            ->default(true),
                     ])
                     ->columns(2),
             ]);

@@ -16,6 +16,7 @@ use App\Models\Call;
 use App\Models\OrganizationUser;
 use App\Models\VoipCallLog;
 use App\Services\AiBillingService;
+use App\Services\RecordingUrlService;
 
 class AudioAnalyzer
 {
@@ -71,11 +72,20 @@ class AudioAnalyzer
         );
 
         $recording = $call->recording;
+        $sendAudioFile = $llmModel->sends_audio_file;
+        $playbackUrl = null;
+
+        if ($recording && ! $sendAudioFile) {
+            $playbackUrl = app(RecordingUrlService::class)->resolve(
+                $recording,
+                $recording->source_url ?? $callLog?->recording_url,
+            );
+        }
 
         $request = new AudioAnalysisRequestData(
             callId: $callId,
-            storagePath: $recording?->storage_path,
-            storageDisk: $recording?->storage_disk,
+            storagePath: $sendAudioFile ? $recording?->storage_path : null,
+            storageDisk: $sendAudioFile ? $recording?->storage_disk : null,
             recordingUrl: $recording?->source_url ?? $callLog?->recording_url,
             mimeType: $recording?->mime_type,
             model: $modelKey,
@@ -84,6 +94,8 @@ class AudioAnalyzer
             organizationId: $call->organization_id,
             organizationUserId: $call->organization_user_id,
             voipCallLogId: $call->voip_call_log_id,
+            sendAudioFile: $sendAudioFile,
+            playbackUrl: $playbackUrl,
         );
 
         $result = $provider->analyzeAudio($request);

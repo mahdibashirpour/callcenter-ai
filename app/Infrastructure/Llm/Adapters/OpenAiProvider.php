@@ -49,10 +49,17 @@ class OpenAiProvider extends AbstractLlmProvider
         $started = microtime(true);
         $promptBuilder = app(\App\Application\Llm\Services\PromptBuilder::class);
 
-        [$audioBase64, $audioFormat] = $this->resolveAudioPayload($request);
+        $audioFormat = $this->resolveAudioFormat($request);
+        [$audioBase64, $audioFormat, $mimeType] = $request->sendAudioFile
+            ? $this->resolveAudioPayload($request)
+            : [null, $audioFormat, null];
 
-        if ($this->hasRealAudio($request) && ! $audioBase64) {
+        if ($this->hasRealAudio($request) && $request->sendAudioFile && ! $audioBase64) {
             return $this->failure('فایل صوتی برای تحلیل یافت نشد.');
+        }
+
+        if ($this->hasRealAudio($request) && ! $request->sendAudioFile && ! $request->playbackUrl) {
+            return $this->failure('آدرس قابل‌دسترس فایل صوتی برای تحلیل یافت نشد.');
         }
 
         $guard = app(\App\Services\PersianOutputGuard::class);
@@ -60,17 +67,16 @@ class OpenAiProvider extends AbstractLlmProvider
         $body = null;
 
         foreach ([false, true] as $strictPersian) {
-            $messages = $promptBuilder->buildAudioMessages($request, $audioBase64, $audioFormat, $strictPersian);
+            $messages = $promptBuilder->buildAudioMessages(
+                $request,
+                $audioFormat,
+                $strictPersian,
+                $request->sendAudioFile ? null : $request->playbackUrl,
+                $audioBase64,
+                $mimeType,
+            );
 
-            $response = Http::withToken($this->config->credentials->apiKey)
-                ->timeout(300)
-                ->post(rtrim($this->resolveBaseUrl(), '/').'/chat/completions', [
-                    'model' => $model,
-                    'messages' => $messages,
-                    'temperature' => $this->config->settings->temperature ?? 0.3,
-                    'max_tokens' => $this->config->settings->maxOutputTokens ?? 2000,
-                    'response_format' => ['type' => 'json_object'],
-                ]);
+            $response = $this->postChatCompletion($messages, $model);
 
             if (! $response->successful()) {
                 $status = $response->status();
@@ -115,7 +121,7 @@ class OpenAiProvider extends AbstractLlmProvider
         );
     }
 
-    /** @return array{0: ?string, 1: string} */
+    /** @return array{0: ?string, 1: string, 2: ?string} */
     private function resolveAudioPayload(AudioAnalysisRequestData $request): array
     {
         if ($request->storagePath) {
@@ -124,7 +130,13 @@ class OpenAiProvider extends AbstractLlmProvider
                 $request->storageDisk,
             );
 
-            return [base64_encode($payload['content']), $payload['format']];
+            $format = $payload['format'];
+
+            return [
+                base64_encode($payload['content']),
+                $format,
+                $request->mimeType ?? $this->mimeTypeForFormat($format),
+            ];
         }
 
         if ($request->recordingUrl) {
@@ -133,11 +145,57 @@ class OpenAiProvider extends AbstractLlmProvider
             if ($response->successful()) {
                 $format = strtolower(pathinfo(parse_url($request->recordingUrl, PHP_URL_PATH) ?? '', PATHINFO_EXTENSION)) ?: 'mp3';
 
-                return [base64_encode($response->body()), $format];
+                return [
+                    base64_encode($response->body()),
+                    $format,
+                    $request->mimeType ?? $this->mimeTypeForFormat($format),
+                ];
             }
         }
 
-        return [null, 'mp3'];
+        return [null, 'mp3', null];
+    }
+
+    /** @param  list<array{role: string, content: mixed}>  $messages */
+    private function postChatCompletion(array $messages, string $model): \Illuminate\Http\Client\Response
+    {
+        return Http::withToken($this->config->credentials->apiKey)
+            ->timeout(300)
+            ->post(rtrim($this->resolveBaseUrl(), '/').'/chat/completions', [
+                'model' => $model,
+                'messages' => $messages,
+                'temperature' => $this->config->settings->temperature ?? 0.3,
+                'max_tokens' => $this->config->settings->maxOutputTokens ?? 2000,
+                'response_format' => ['type' => 'json_object'],
+            ]);
+    }
+
+    private function mimeTypeForFormat(string $format): string
+    {
+        return match (strtolower($format)) {
+            'wav' => 'audio/wav',
+            'ogg' => 'audio/ogg',
+            'webm' => 'audio/webm',
+            'm4a', 'mp4' => 'audio/mp4',
+            default => 'audio/mpeg',
+        };
+    }
+
+    private function resolveAudioFormat(AudioAnalysisRequestData $request): string
+    {
+        if ($request->storagePath) {
+            return strtolower(pathinfo($request->storagePath, PATHINFO_EXTENSION)) ?: 'mp3';
+        }
+
+        if ($request->recordingUrl) {
+            return strtolower(pathinfo(parse_url($request->recordingUrl, PHP_URL_PATH) ?? '', PATHINFO_EXTENSION)) ?: 'mp3';
+        }
+
+        if ($request->playbackUrl) {
+            return strtolower(pathinfo(parse_url($request->playbackUrl, PHP_URL_PATH) ?? '', PATHINFO_EXTENSION)) ?: 'mp3';
+        }
+
+        return 'mp3';
     }
 
     protected function resolveBaseUrl(): string
@@ -148,6 +206,11 @@ class OpenAiProvider extends AbstractLlmProvider
     private function resolveAudioAnalysisModel(?string $requestedModel): string
     {
         $model = $this->resolveModel($requestedModel, 'gpt-4o-audio-preview');
+
+        if ($this->usesIntermediaryEndpoint() || str_contains($model, '/')) {
+            return $model;
+        }
+
         $audioCapableModels = [
             'gpt-4o-audio-preview',
             'gpt-4o',
@@ -161,5 +224,16 @@ class OpenAiProvider extends AbstractLlmProvider
         }
 
         return 'gpt-4o-audio-preview';
+    }
+
+    private function usesIntermediaryEndpoint(): bool
+    {
+        $baseUrl = $this->config->credentials->baseUrl;
+
+        if (! filled($baseUrl)) {
+            return false;
+        }
+
+        return ! str_contains(rtrim(strtolower($baseUrl), '/'), 'api.openai.com');
     }
 }

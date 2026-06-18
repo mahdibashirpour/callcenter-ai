@@ -16,5 +16,7 @@ readonly class AudioAnalysisRequestData
         public ?int $organizationId = null,
         public ?int $organizationUserId = null,
         public ?int $voipCallLogId = null,
+        public bool $sendAudioFile = true,
+        public ?string $playbackUrl = null,
     ) {}
 }

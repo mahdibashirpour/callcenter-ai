@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\LlmProviders\Tables;
 
+use App\Domain\Llm\Enums\LlmProviderCode;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
@@ -19,7 +20,22 @@ class LlmProvidersTable
         return $table
             ->columns([
                 TextColumn::make('name')->searchable()->sortable(),
-                TextColumn::make('code')->badge()->searchable()->sortable(),
+                TextColumn::make('code')
+                    ->label(__('filament.fields.provider_adapter'))
+                    ->formatStateUsing(function (?string $state): string {
+                        if (! $state) {
+                            return __('filament.misc.em_dash');
+                        }
+
+                        try {
+                            return LlmProviderCode::from($state)->label();
+                        } catch (\ValueError) {
+                            return $state;
+                        }
+                    })
+                    ->badge()
+                    ->searchable()
+                    ->sortable(),
                 TextColumn::make('models_count')
                     ->counts('models')
                     ->label(__('filament.fields.models'))

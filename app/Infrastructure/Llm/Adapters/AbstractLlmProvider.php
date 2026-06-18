@@ -52,7 +52,11 @@ abstract class AbstractLlmProvider implements LlmProviderInterface
 
     protected function hasRealAudio(AudioAnalysisRequestData $request): bool
     {
-        return filled($request->storagePath) || filled($request->recordingUrl);
+        if ($request->sendAudioFile) {
+            return filled($request->storagePath) || filled($request->recordingUrl);
+        }
+
+        return filled($request->playbackUrl) || filled($request->recordingUrl);
     }
 
     protected function refuseDemoAnalysis(AudioAnalysisRequestData $request, string $model): ?LlmOperationResult

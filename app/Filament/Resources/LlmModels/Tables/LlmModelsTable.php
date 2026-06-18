@@ -45,6 +45,10 @@ class LlmModelsTable
                     ->formatStateUsing(fn ($state) => PlatformAiSettings::formatMoney($state))
                     ->sortable(false),
                 IconColumn::make('is_default')->boolean()->label(__('filament.fields.default')),
+                IconColumn::make('sends_audio_file')
+                    ->boolean()
+                    ->label(__('filament.fields.sends_audio_file'))
+                    ->toggleable(),
                 IconColumn::make('is_active')->boolean()->label(__('filament.fields.active')),
             ])
             ->filters([
