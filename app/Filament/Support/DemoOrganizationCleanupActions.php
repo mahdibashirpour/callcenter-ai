@@ -5,6 +5,7 @@ namespace App\Filament\Support;
 use App\Enums\UserRole;
 use App\Exceptions\DemoCleanupException;
 use App\Filament\Resources\Organizations\OrganizationResource;
+use App\Jobs\ProvisionDemoPersonJob;
 use App\Models\Organization;
 use App\Services\Demo\DemoOrganizationCleanupService;
 use App\Services\Demo\DemoPersonProvisioner;
@@ -150,11 +151,6 @@ final class DemoOrganizationCleanupActions
                     return;
                 }
 
-                $provisioner = app(DemoPersonProvisioner::class);
-                $succeeded = 0;
-                $failed = 0;
-                $errors = [];
-
                 $handle = fopen($path, 'r');
 
                 if ($handle === false) {
@@ -167,14 +163,15 @@ final class DemoOrganizationCleanupActions
                     return;
                 }
 
+                $queued = 0;
+                $skipped = 0;
                 $rowNumber = 0;
 
                 while (($row = fgetcsv($handle)) !== false) {
                     $rowNumber++;
 
                     if (count($row) < 4) {
-                        $failed++;
-                        $errors[] = "ردیف {$rowNumber}: ستون‌های ناقص";
+                        $skipped++;
 
                         continue;
                     }
@@ -187,43 +184,27 @@ final class DemoOrganizationCleanupActions
                     $password = trim($password);
 
                     if (empty($phone) || empty($name) || empty($email) || empty($password)) {
-                        $failed++;
-                        $errors[] = "ردیف {$rowNumber}: مقدار خالی";
+                        $skipped++;
 
                         continue;
                     }
 
-                    try {
-                        $provisioner->provision($phone, $name, $email, $password);
-                        $succeeded++;
-                    } catch (\Throwable $exception) {
-                        $failed++;
-                        $errors[] = "ردیف {$rowNumber} ({$phone}): ".$exception->getMessage();
-                    }
+                    dispatch(new ProvisionDemoPersonJob($phone, $name, $email, $password));
+                    $queued++;
                 }
 
                 fclose($handle);
 
                 Storage::disk('local')->delete($data['csv_file']);
 
-                if ($succeeded > 0) {
-                    Notification::make()
-                        ->title(__('filament.demo_import.csv_success'))
-                        ->body(__('filament.demo_import.csv_summary', [
-                            'succeeded' => $succeeded,
-                            'failed' => $failed,
-                        ]))
-                        ->success()
-                        ->send();
-                }
-
-                if ($failed > 0) {
-                    Notification::make()
-                        ->title(__('filament.demo_import.csv_partial_failure'))
-                        ->body(implode("\n", array_slice($errors, 0, 5)))
-                        ->warning()
-                        ->send();
-                }
+                Notification::make()
+                    ->title(__('filament.demo_import.csv_queued'))
+                    ->body(__('filament.demo_import.csv_queued_summary', [
+                        'queued' => $queued,
+                        'skipped' => $skipped,
+                    ]))
+                    ->success()
+                    ->send();
             });
     }
 

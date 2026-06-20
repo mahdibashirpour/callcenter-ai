@@ -360,6 +360,8 @@ return [
         'csv_success' => 'وارد کردن CSV کامل شد',
         'csv_summary' => ':succeeded ردیف موفق — :failed ردیف ناموفق',
         'csv_partial_failure' => 'برخی ردیف‌ها وارد نشدند',
+        'csv_queued' => 'در صف قرار گرفت',
+        'csv_queued_summary' => ':queued مورد در صف پردازش قرار گرفت — :skipped ردیف ناقص نادیده گرفته شد',
         'failed' => 'خطا در ایجاد دمو',
         'file_not_found' => 'فایل یافت نشد',
         'create_for_user_heading' => 'ایجاد دمو برای کاربر',
